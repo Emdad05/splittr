@@ -34,17 +34,35 @@ body{min-height:100vh;font-family:var(--font);display:flex;flex-direction:column
 
 /* ── Hero ── */
 .hero{
-  width:100%;background:linear-gradient(155deg,var(--primary-container) 0%,color-mix(in srgb,var(--primary) 15%,var(--surface)) 100%);
-  padding:64px 24px 72px;display:flex;flex-direction:column;align-items:center;gap:10px;
+  width:100%;background:linear-gradient(160deg,#0a0a0a 0%,#1c1c1e 60%,#111 100%);
+  padding:72px 24px 80px;display:flex;flex-direction:column;align-items:center;gap:12px;
   position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+  width:380px;height:380px;
+  background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 70%);
+  pointer-events:none;
 }
 .hero::after{
   content:'';position:absolute;bottom:-36px;left:0;right:0;height:72px;
   background:var(--surface);border-radius:36px 36px 0 0;
 }
-.logo{font-family:var(--font-d);font-size:52px;line-height:1;letter-spacing:-1.5px;position:relative;z-index:1}
-.logo span{color:var(--primary)}.logo em{color:var(--on-surface);font-style:normal}
-.tagline{font-size:14px;color:var(--on-surface-variant);position:relative;z-index:1;letter-spacing:.2px}
+.logo{
+  font-family:var(--font-d);font-size:60px;line-height:1;letter-spacing:-2.5px;
+  position:relative;z-index:1;display:flex;align-items:baseline;gap:0;
+}
+.logo span{color:#ffffff;font-weight:400}
+.logo em{color:rgba(255,255,255,.4);font-style:normal;font-weight:300;letter-spacing:-1px}
+.logo-dot{
+  width:8px;height:8px;border-radius:50%;background:#fff;
+  margin:0 2px 10px;flex-shrink:0;opacity:.85;
+  box-shadow:0 0 12px rgba(255,255,255,.5);
+}
+.tagline{
+  font-size:12px;color:rgba(255,255,255,.4);position:relative;z-index:1;
+  letter-spacing:1.8px;text-transform:uppercase;margin-top:4px;
+}
 
 /* ── Body ── */
 .body{width:100%;max-width:420px;padding:36px 24px 60px;display:flex;flex-direction:column;gap:20px}
@@ -149,8 +167,8 @@ body{min-height:100vh;font-family:var(--font);display:flex;flex-direction:column
 <body>
 
 <div class="hero">
-  <div class="logo"><span>Split</span><em>tr</em></div>
-  <div class="tagline">Split expenses, settle fairly</div>
+  <div class="logo"><span>Split</span><div class="logo-dot"></div><em>tr</em></div>
+  <div class="tagline">Split expenses · Settle fairly</div>
 </div>
 
 <div class="body">

@@ -177,18 +177,27 @@ async function _initFromServer(){
       if(local) localGroups=_migrateGroups(JSON.parse(local));
     }catch(e){}
 
+    const hadLocalData=localGroups.length>0;
+
     if(data.groups&&data.groups.length){
       /* Merge local groups into Drive groups — add any local group whose id
          doesn't already exist in Drive so guest data is never lost */
       const driveIds=new Set(data.groups.map(g=>g.id));
-      const merged=[...data.groups, ...localGroups.filter(g=>!driveIds.has(g.id))];
+      const newLocalGroups=localGroups.filter(g=>!driveIds.has(g.id));
+      const merged=[...data.groups, ...newLocalGroups];
       S.groups=_migrateGroups(merged);
       localStorage.setItem('split-v4',JSON.stringify(S.groups));
-      if(merged.length!==data.groups.length) await _apiSave(true); // upload merged data
+      if(newLocalGroups.length){
+        await _apiSave(true); // upload merged data
+        setTimeout(()=>snack(`✓ ${newLocalGroups.length} local list${newLocalGroups.length!==1?'s':''} synced to Drive`),800);
+      }
     } else {
       /* Drive has nothing — upload whatever local data exists */
       S.groups=localGroups;
-      if(S.groups.length) await _apiSave(true);
+      if(S.groups.length){
+        await _apiSave(true);
+        setTimeout(()=>snack(`✓ ${S.groups.length} list${S.groups.length!==1?'s':''} backed up to Drive`),800);
+      }
     }
     _guestMode=false; localStorage.removeItem('splittr_guest');
     document.cookie='splittr_guest=; Max-Age=0; path=/; SameSite=Lax';
@@ -251,6 +260,9 @@ function _enterGuestMode(){
 
 Q('guest-warning-signin').onclick=()=>{
   /* Do NOT remove split-v4 here — _initFromServer will merge it with Drive data */
+  const btn=Q('guest-warning-signin');
+  btn.textContent='Uploading & signing in…';
+  btn.style.opacity='.6';btn.style.pointerEvents='none';
   localStorage.removeItem('splittr_guest');
   document.cookie='splittr_guest=; Max-Age=0; path=/; SameSite=Lax';
   window.location.href='/api/auth/url';

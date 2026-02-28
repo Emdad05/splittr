@@ -452,19 +452,36 @@ html.dark .cv{background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.1)}
 
 /* Top decorative band */
 .auth-hero{
-  background:linear-gradient(160deg,var(--md-primary-container) 0%,color-mix(in srgb,var(--md-primary) 12%,var(--md-surface)) 100%);
-  padding:56px 32px 40px;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:linear-gradient(160deg,#0a0a0a 0%,#1c1c1e 60%,#111 100%);
+  padding:64px 32px 44px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
   position:relative;overflow:hidden;
+}
+.auth-hero::before{
+  content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:320px;height:320px;
+  background:radial-gradient(circle,rgba(255,255,255,.04) 0%,transparent 70%);
+  pointer-events:none;
 }
 .auth-hero::after{
   content:'';position:absolute;bottom:-32px;left:0;right:0;height:64px;
   background:var(--md-surface);border-radius:32px 32px 0 0;
 }
-.auth-hero-logo{font-family:var(--font-d);font-size:44px;line-height:1;letter-spacing:-1px;position:relative;z-index:1}
-.auth-hero-logo span{color:var(--md-primary)}
-.auth-hero-logo em{color:var(--md-on-surface);font-style:normal}
-.auth-hero-tag{font-size:14px;color:var(--md-on-surface-variant);position:relative;z-index:1;letter-spacing:.2px}
+.auth-hero-logo{
+  font-family:var(--font-d);font-size:56px;line-height:1;letter-spacing:-2.5px;
+  position:relative;z-index:1;display:flex;align-items:baseline;gap:0;
+}
+.auth-hero-logo span{color:#ffffff;font-weight:400}
+.auth-hero-logo em{color:rgba(255,255,255,.45);font-style:normal;font-weight:300;letter-spacing:-1px}
+.auth-hero-logo-dot{
+  width:7px;height:7px;border-radius:50%;background:#fff;
+  margin:0 3px 8px;flex-shrink:0;opacity:.9;
+  box-shadow:0 0 10px rgba(255,255,255,.5);
+}
+.auth-hero-tag{
+  font-size:13px;color:rgba(255,255,255,.4);position:relative;z-index:1;
+  letter-spacing:1.5px;text-transform:uppercase;font-weight:400;margin-top:2px;
+}
 
 /* Body below hero */
 .auth-body{flex:1;padding:32px 24px 40px;display:flex;flex-direction:column;gap:20px;max-width:420px;width:100%;margin:0 auto}
