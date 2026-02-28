@@ -114,12 +114,14 @@ body::before{
 }
 .tagline::before,.tagline::after{content:'';width:18px;height:1px;background:var(--gold-dim);}
 
-/* ── MAIN CONTENT — flex-grow fills remaining height ── */
+/* ── MAIN CONTENT ── */
 .main{
   flex:1;
   display:flex;flex-direction:column;
   padding:20px 20px 0;
   gap:14px;
+  /* leave room for fixed button bar */
+  padding-bottom:180px;
 }
 
 /* ── TRUST NOTICE ── */
@@ -155,15 +157,20 @@ body::before{
 .f-label{font-size:12px;font-weight:500;color:var(--w);}
 .f-sub{font-size:10.5px;color:var(--t3);margin-top:1px;line-height:1.4;font-weight:300;}
 
-/* ── SPACER pushes buttons toward bottom ── */
-.spacer{flex:1;}
+/* ── SPACER — removed, buttons are fixed now ── */
 
-/* ── BUTTONS — pinned near bottom ── */
+/* ── BUTTONS — fixed at bottom, always visible ── */
 .actions{
-  padding:0 0 20px;
+  position:fixed;
+  bottom:0;left:50%;
+  transform:translateX(-50%);
+  width:100%;max-width:420px;
+  padding:16px 20px calc(16px + env(safe-area-inset-bottom, 0px));
   display:flex;flex-direction:column;
   gap:10px;
-  flex-shrink:0;
+  background:#07060A;
+  border-top:1px solid var(--border);
+  z-index:100;
 }
 
 .btn-google{
@@ -337,29 +344,25 @@ body::before{
       </div>
     </div>
 
-    <!-- Spacer pushes buttons to bottom -->
-    <div class="spacer"></div>
-
-    <!-- BUTTONS — always above fold -->
-    <div class="actions">
-      <a class="btn-google" href="/api/auth/url">
-        <div class="g-badge">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
-        </div>
-        Sign in with Google
-      </a>
-
-      <div class="or-row"><span>or</span></div>
-
-      <button class="btn-guest" onclick="openModal()">Continue without signing in</button>
-
-      <p class="privacy-note">
-        By signing in you agree to our <a href="/terms">Terms</a> &amp; <a href="/privacy">Privacy Policy</a>.
-      </p>
     </div>
 
   </div><!-- /main -->
 </div><!-- /page -->
+
+<!-- BUTTONS — position:fixed, always visible at bottom -->
+<div class="actions">
+  <a class="btn-google" href="/api/auth/url">
+    <div class="g-badge">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G">
+    </div>
+    Sign in with Google
+  </a>
+  <div class="or-row"><span>or</span></div>
+  <button class="btn-guest" onclick="openModal()">Continue without signing in</button>
+  <p class="privacy-note">
+    By signing in you agree to our <a href="/terms">Terms</a> &amp; <a href="/privacy">Privacy Policy</a>.
+  </p>
+</div>
 
 <!-- TRUST MODAL -->
 <div class="modal-ov" id="modal">
