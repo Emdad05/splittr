@@ -110,13 +110,13 @@ nav {
   height: 62px;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 32px;
-  transition: background 0.3s, border-color 0.3s;
+  background: #10131A;
+  border-bottom: 1px solid transparent;
+  overflow: hidden;
+  transition: border-color 0.3s;
 }
 nav.stuck {
-  background: rgba(16,19,26,0.80);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border-bottom: 1px solid var(--border);
+  border-bottom-color: var(--border);
 }
 .nav-logo {
   font-size: 19px; font-weight: 800;
@@ -318,7 +318,7 @@ nav.stuck {
 }
 .trust-item {
   display: flex; align-items: center; gap: 6px;
-  font-size: 12px; color: var(--t3);
+  font-size: 12px; color: rgba(200,210,255,0.42);
 }
 .trust-item .mi { font-size: 14px; color: var(--accent-text); }
 .trust-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--border-2); }
@@ -347,12 +347,12 @@ nav.stuck {
 }
 .section-h {
   font-size: clamp(26px, 2.8vw, 44px); font-weight: 800;
-  letter-spacing: -1px; line-height: 1.1; color: var(--t1);
+  letter-spacing: -1.5px; line-height: 1.1; color: #ECEFFE;
   margin-bottom: 12px;
 }
-.section-h span { color: var(--accent-text); }
+.section-h span { color: #7C8FFF; }
 .section-p {
-  font-size: 15px; color: var(--t2); max-width: 480px;
+  font-size: 15px; color: rgba(220,224,255,0.60); max-width: 480px;
   line-height: 1.75; margin-bottom: 52px;
 }
 
@@ -396,8 +396,8 @@ nav.stuck {
 .feat-ic.blue { background: var(--accent-dim); border-color: rgba(91,110,245,0.25); }
 .feat-ic.blue .mi { color: var(--accent-text); }
 
-.feat-title { font-size: 15px; font-weight: 700; color: var(--t1); margin-bottom: 8px; }
-.feat-body  { font-size: 13.5px; color: var(--t2); line-height: 1.68; }
+.feat-title { font-size: 15px; font-weight: 700; color: #E8ECFF; margin-bottom: 8px; }
+.feat-body  { font-size: 13.5px; color: rgba(210,218,255,0.55); line-height: 1.72; }
 
 /* ============================================================
    HOW IT WORKS — glass numbered steps
@@ -451,10 +451,10 @@ nav.stuck {
 }
 .cta-h {
   font-size: clamp(26px, 3vw, 40px);
-  font-weight: 800; letter-spacing: -1px;
-  color: var(--t1); margin-bottom: 14px;
+  font-weight: 800; letter-spacing: -1.5px;
+  color: #ECEFFE; margin-bottom: 14px;
 }
-.cta-p { font-size: 15px; color: var(--t2); line-height: 1.75; margin-bottom: 38px; }
+.cta-p { font-size: 15px; color: rgba(220,224,255,0.58); line-height: 1.75; margin-bottom: 38px; }
 .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
 /* ============================================================
@@ -473,9 +473,9 @@ nav.stuck {
 .foot-logo { font-size: 17px; font-weight: 800; letter-spacing: -0.4px; color: var(--t1); }
 .foot-logo span { color: var(--accent-text); }
 .foot-links { display: flex; gap: 22px; }
-.foot-link { font-size: 13px; color: var(--t3); transition: color 0.15s; }
-.foot-link:hover { color: var(--t2); }
-.foot-copy { font-size: 12px; color: var(--t3); }
+.foot-link { font-size: 13px; color: rgba(200,208,255,0.38); transition: color 0.15s; }
+.foot-link:hover { color: rgba(200,208,255,0.70); }
+.foot-copy { font-size: 12px; color: rgba(200,208,255,0.30); }
 
 /* ============================================================
    SCROLL REVEAL
