@@ -110,6 +110,20 @@ let _currentUser = null;
 let _guestMode   = false;
 let _syncTimer   = null;
 
+/* ── Wire up Google sign-in button → redirect to OAuth ── */
+(function(){
+  const btn = document.getElementById('google-signin-btn');
+  if(btn) btn.onclick = () => {
+    // Show loading state on the button
+    btn.disabled = true;
+    const lbl = document.getElementById('google-btn-label');
+    if(lbl) lbl.textContent = 'Signing in…';
+    const loading = document.getElementById('auth-loading');
+    if(loading) loading.classList.add('show');
+    window.location.href = '/api/auth/url';
+  };
+})();
+
 /* ── earlyRestore: render from localStorage cache instantly ──────── */
 (function earlyRestore(){
   const isGuest = localStorage.getItem('splittr_guest')==='1';
@@ -120,10 +134,13 @@ let _syncTimer   = null;
   try{ _currentUser=JSON.parse(localStorage.getItem('splittr_user')||'null'); }catch(e){}
   const app=document.getElementById('app');
   if(app) app.classList.add('unlocked');
-  if(isGuest){ const gw=document.getElementById('guest-warning'); if(gw)gw.classList.add('show'); }
+  if(isGuest){
+    const gw=document.getElementById('guest-warning'); if(gw)gw.classList.add('show');
+  }
   try{ renderHome(); }catch(e){}
   try{ showFab('home'); }catch(e){}
-  if(!isGuest){
+  // Only attempt Drive sync if we have a real session cookie (not just guest)
+  if(!isGuest && hasSess){
     requestAnimationFrame(()=>{ try{_renderUserChip();}catch(e){} });
     setTimeout(()=>_driveSync(), 1000); // background Drive sync
   }
@@ -187,9 +204,13 @@ _guestOv().addEventListener('click',e=>{ if(e.target===_guestOv()) _guestOv().cl
 
 function _enterGuestMode(){
   _guestMode=true; load(); renderHome(); showFab('home');
-  Q('app').classList.add('unlocked');
+  const app=Q('app');
+  if(app) app.classList.add('unlocked');
   const ao=Q('auth-overlay'); if(ao) ao.classList.add('hidden');
-  Q('guest-warning').classList.add('show');
+  document.documentElement.classList.add('splittr-authed');
+  const gw=Q('guest-warning'); if(gw) gw.classList.add('show');
+  // Make sure sync indicator is never stuck spinning in guest mode
+  setSyncDone();
 }
 
 Q('guest-warning-signin').onclick=()=>{ localStorage.removeItem('splittr_guest'); window.location.href='/api/auth/url'; };
