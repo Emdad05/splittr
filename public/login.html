@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Splittr — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
+<script>
+/* If already logged in, skip login page entirely */
+(function(){
+  var p = new URLSearchParams(location.search);
+  if (p.get('auth') === 'error') return; // stay on login to show error
+  if (document.cookie.includes('splittr_has_session=1'))
+    window.location.replace('/app');
+  if (localStorage.getItem('splittr_guest') === '1')
+    window.location.replace('/app');
+})();
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#006874;--on-primary:#fff;
+  --primary-container:#97f0ff;--on-primary-container:#001f24;
+  --surface:#f6fafb;--on-surface:#191c1d;
+  --on-surface-variant:#3f484a;--outline:#6f797a;
+  --outline-variant:#bfc8ca;--error:#ba1a1a;
+  --font:'DM Sans',sans-serif;--font-d:'DM Serif Display',serif;
+}
+html{height:100%;background:var(--surface)}
+body{min-height:100vh;font-family:var(--font);display:flex;flex-direction:column;align-items:center;background:var(--surface)}
+.mi{font-family:'Material Symbols Outlined';font-weight:400;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-smoothing:antialiased;user-select:none}
+
+/* ── Hero ── */
+.hero{
+  width:100%;background:linear-gradient(155deg,var(--primary-container) 0%,color-mix(in srgb,var(--primary) 15%,var(--surface)) 100%);
+  padding:64px 24px 72px;display:flex;flex-direction:column;align-items:center;gap:10px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-36px;left:0;right:0;height:72px;
+  background:var(--surface);border-radius:36px 36px 0 0;
+}
+.logo{font-family:var(--font-d);font-size:52px;line-height:1;letter-spacing:-1.5px;position:relative;z-index:1}
+.logo span{color:var(--primary)}.logo em{color:var(--on-surface);font-style:normal}
+.tagline{font-size:14px;color:var(--on-surface-variant);position:relative;z-index:1;letter-spacing:.2px}
+
+/* ── Body ── */
+.body{width:100%;max-width:420px;padding:36px 24px 60px;display:flex;flex-direction:column;gap:20px}
+
+/* ── Feature list ── */
+.features{display:flex;flex-direction:column;gap:8px}
+.feature{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:#fff;border:1px solid var(--outline-variant);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.f-icon{width:38px;height:38px;border-radius:10px;background:color-mix(in srgb,var(--primary) 10%,transparent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.f-icon .mi{color:var(--primary);font-size:20px}
+.f-text{flex:1}
+.f-label{font-size:13px;font-weight:600;color:var(--on-surface);line-height:1.3}
+.f-sub{font-size:11px;color:var(--on-surface-variant);margin-top:2px;line-height:1.4}
+
+/* ── Buttons ── */
+.btn-google{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;height:54px;border-radius:999px;border:none;cursor:pointer;
+  background:var(--primary);color:#fff;
+  font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:.1px;
+  box-shadow:0 2px 8px rgba(0,104,116,.35);
+  transition:filter .15s,box-shadow .2s;
+  text-decoration:none;
+}
+.btn-google:hover{filter:brightness(1.07);box-shadow:0 4px 16px rgba(0,104,116,.4)}
+.btn-google:active{filter:brightness(.96)}
+.g-badge{width:24px;height:24px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.g-badge img{width:15px;height:15px;display:block}
+
+.or-row{display:flex;align-items:center;gap:12px}
+.or-row::before,.or-row::after{content:'';flex:1;height:1px;background:var(--outline-variant)}
+.or-row span{font-size:11px;color:var(--outline);letter-spacing:.4px;text-transform:uppercase}
+
+.btn-guest{
+  width:100%;height:40px;border:none;background:transparent;cursor:pointer;
+  font-family:var(--font);font-size:13px;color:var(--outline);
+  transition:color .15s;letter-spacing:.1px;
+}
+.btn-guest:hover{color:var(--on-surface-variant)}
+
+/* ── Error banner ── */
+.error-banner{
+  display:none;align-items:center;gap:10px;
+  background:#ffdad6;border:1px solid rgba(186,26,26,.2);border-radius:12px;
+  padding:12px 14px;font-size:13px;color:#410002;
+}
+.error-banner.show{display:flex}
+.error-banner .mi{font-size:18px;color:#ba1a1a;flex-shrink:0}
+
+.privacy{font-size:11px;color:var(--outline);text-align:center;line-height:1.65}
+.privacy b{color:var(--on-surface-variant);font-weight:500}
+
+/* ── Guest confirm modal ── */
+.modal-ov{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  z-index:100;display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-ov.open{opacity:1;pointer-events:all}
+.modal{
+  background:#fff;border-radius:28px 28px 0 0;width:100%;max-width:480px;
+  padding:0 0 env(safe-area-inset-bottom,24px);
+  box-shadow:0 -4px 32px rgba(0,0,0,.18);
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.2,0,0,1);
+}
+.modal-ov.open .modal{transform:translateY(0)}
+.m-handle{width:36px;height:4px;background:#bfc8ca;border-radius:2px;margin:12px auto 0}
+.m-icon{width:64px;height:64px;border-radius:18px;background:#ffdad6;display:flex;align-items:center;justify-content:center;margin:20px auto 0}
+.m-icon .mi{font-size:32px;color:#ba1a1a}
+.m-title{font-size:20px;font-weight:600;color:#191c1d;text-align:center;margin:14px 28px 0;line-height:1.25}
+.m-body{font-size:14px;color:var(--on-surface-variant);text-align:center;margin:8px 28px 0;line-height:1.65}
+.m-warn{
+  margin:14px 16px 0;border-radius:12px;padding:12px 14px;
+  display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.55;
+  background:rgba(186,26,26,.06);border:1px solid rgba(186,26,26,.2);color:var(--on-surface-variant);
+}
+.m-warn .mi{font-size:18px;color:#ba1a1a;flex-shrink:0;margin-top:1px}
+.m-info-rows{margin:12px 16px 0;display:flex;flex-direction:column;gap:2px}
+.m-info-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:#f6fafb;border:1px solid var(--outline-variant)}
+.m-info-row .mi{font-size:20px;color:var(--primary);flex-shrink:0}
+.m-info-label{font-size:13px;font-weight:500;color:var(--on-surface)}
+.m-info-sub{font-size:11px;color:var(--on-surface-variant);margin-top:1px}
+.m-actions{display:flex;flex-direction:column;gap:10px;margin:18px 16px 8px}
+.m-btn-primary{
+  width:100%;height:50px;border:none;border-radius:999px;cursor:pointer;
+  font-family:var(--font);font-size:15px;font-weight:600;
+  background:var(--primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:filter .15s;
+}
+.m-btn-primary .mi{font-size:20px}
+.m-btn-primary:hover{filter:brightness(1.06)}
+.m-btn-secondary{
+  width:100%;height:46px;border:1.5px solid var(--outline-variant);border-radius:999px;
+  background:transparent;cursor:pointer;font-family:var(--font);font-size:14px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  color:var(--on-surface);transition:background .15s;
+}
+.m-btn-secondary .mi{font-size:18px;color:var(--primary)}
+.m-btn-secondary:hover{background:rgba(0,0,0,.04)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo"><span>Split</span><em>tr</em></div>
+  <div class="tagline">Split expenses, settle fairly</div>
+</div>
+
+<div class="body">
+
+  <!-- Auth error -->
+  <div class="error-banner" id="err-banner">
+    <span class="mi">error</span>
+    <span>Sign-in failed. Please try again.</span>
+  </div>
+
+  <!-- Features -->
+  <div class="features">
+    <div class="feature">
+      <div class="f-icon"><span class="mi">sync</span></div>
+      <div class="f-text">
+        <div class="f-label">Sync across all your devices</div>
+        <div class="f-sub">Access your lists from phone, tablet or desktop</div>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="f-icon"><span class="mi">lock</span></div>
+      <div class="f-text">
+        <div class="f-label">Private to you</div>
+        <div class="f-sub">Stored securely — only you can access your data</div>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="f-icon"><span class="mi">cloud_done</span></div>
+      <div class="f-text">
+        <div class="f-label">Automatic backup</div>
+        <div class="f-sub">Your data is safe even if you clear browser storage</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google sign-in -->
+  <a class="btn-google" href="/api/auth/url">
+    <div class="g-badge"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G"></div>
+    Sign in with Google
+  </a>
+
+  <div class="or-row"><span>or</span></div>
+
+  <button class="btn-guest" id="guest-btn">Continue without signing in</button>
+
+  <p class="privacy">
+    Your data is encrypted and stored securely. <b>No one else can access it.</b>
+  </p>
+
+</div>
+
+<!-- Guest confirm sheet -->
+<div class="modal-ov" id="guest-modal">
+  <div class="modal">
+    <div class="m-handle"></div>
+    <div class="m-icon"><span class="mi">cloud_off</span></div>
+    <div class="m-title">Continue without signing in?</div>
+    <div class="m-body">Your data stays local — no cloud backup. You can still export and import manually.</div>
+    <div class="m-warn">
+      <span class="mi">warning</span>
+      <span>Data is <strong>only in this browser</strong>. Clearing browser storage will <strong>permanently erase</strong> everything.</span>
+    </div>
+    <div class="m-info-rows">
+      <div class="m-info-row">
+        <span class="mi">download</span>
+        <div><div class="m-info-label">Export a JSON backup anytime</div><div class="m-info-sub">Use "Backup JSON" in any group's menu</div></div>
+      </div>
+      <div class="m-info-row">
+        <span class="mi">upload</span>
+        <div><div class="m-info-label">Restore from backup later</div><div class="m-info-sub">Use "Import JSON" to reload a saved backup</div></div>
+      </div>
+    </div>
+    <div class="m-actions">
+      <button class="m-btn-primary" id="guest-ok">
+        <span class="mi">arrow_forward</span>Continue without signing in
+      </button>
+      <button class="m-btn-secondary" id="guest-cancel">
+        <span class="mi">account_circle</span>Sign in with Google instead
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Show error if redirected back with ?auth=error
+(function(){
+  if (new URLSearchParams(location.search).get('auth') === 'error'){
+    document.getElementById('err-banner').classList.add('show');
+    history.replaceState({}, '', '/');
+  }
+})();
+
+// Guest modal
+var modal = document.getElementById('guest-modal');
+document.getElementById('guest-btn').onclick = function(){ modal.classList.add('open'); };
+document.getElementById('guest-cancel').onclick = function(){ modal.classList.remove('open'); };
+modal.onclick = function(e){ if (e.target === modal) modal.classList.remove('open'); };
+document.getElementById('guest-ok').onclick = function(){
+  localStorage.setItem('splittr_guest', '1');
+  window.location.href = '/app';
+};
+</script>
+</body>
+</html>

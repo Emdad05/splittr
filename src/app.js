@@ -33,16 +33,19 @@
     window.matchMedia('print').addListener(mq => { if (mq.matches) window.stop(); });
   }
 
-  /* ── DevTools size-detect: redirect if DevTools open ── */
-  let _dtCheck = setInterval(() => {
-    const wt = window.outerWidth - window.innerWidth > 160;
-    const ht = window.outerHeight - window.innerHeight > 160;
-    if (wt || ht) {
-      clearInterval(_dtCheck);
-      document.body.innerHTML = '';
-      window.location.replace('/');
-    }
-  }, 1500);
+  /* ── DevTools size-detect: desktop only (mobile browsers have huge chrome offset) ── */
+  const _isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768;
+  if (!_isMobile) {
+    let _dtCheck = setInterval(() => {
+      const wt = window.outerWidth - window.innerWidth > 200;
+      const ht = window.outerHeight - window.innerHeight > 200;
+      if (wt || ht) {
+        clearInterval(_dtCheck);
+        document.body.innerHTML = '';
+        window.location.replace('/');
+      }
+    }, 2000);
+  }
 
   /* ── Console trap: poison the console ── */
   const _noop = () => {};
