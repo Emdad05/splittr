@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node build.js",
+  "buildCommand": "npm install && npm run build",
   "rewrites": [
     { "source": "/",                    "destination": "/api/index"         },
     { "source": "/app",                 "destination": "/api/app"           },
