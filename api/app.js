@@ -8,7 +8,7 @@ const HTML_PATH = path.join(__dirname,'../public/app.html');
 module.exports = (req, res) => {
   const session = getSession(req);
   const cookies = req.headers.cookie || '';
-  const isGuest = cookies.includes('splittr_has_session=1');
+  const isGuest = cookies.includes('splittr_has_session=1') || cookies.includes('splittr_guest=1');
   if(!session && !isGuest){ res.writeHead(302,{Location:'/'}); return res.end(); }
 
   let appHTML;

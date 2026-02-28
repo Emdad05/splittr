@@ -129,7 +129,7 @@ let _syncTimer   = null;
 
 /* ── earlyRestore: render from localStorage cache instantly ──────── */
 (function earlyRestore(){
-  const isGuest = localStorage.getItem('splittr_guest')==='1';
+  const isGuest = localStorage.getItem('splittr_guest')==='1' || document.cookie.includes('splittr_guest=1');
   const hasSess = document.cookie.includes('splittr_has_session=1');
   if (!isGuest && !hasSess) return;
   try{ const d=localStorage.getItem('split-v4'); if(d)S.groups=_migrateGroups(JSON.parse(d)); }catch(e){}
@@ -222,6 +222,8 @@ Q('guest-warning-signin').onclick=()=>{ localStorage.removeItem('splittr_guest')
 async function _doSignOut(){
   try{ await fetch('/api/auth/logout',{method:'POST',credentials:'include'}); }catch(e){}
   localStorage.removeItem('splittr_user'); localStorage.removeItem('splittr_guest');
+  // Clear guest cookie too
+  document.cookie = 'splittr_guest=; Max-Age=0; path=/; SameSite=Lax';
   _currentUser=null; _guestMode=false; S={groups:[],activeId:null};
   Q('user-chip').style.display='none';
   Q('app').classList.remove('unlocked');

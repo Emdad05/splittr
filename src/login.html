@@ -250,6 +250,9 @@ document.getElementById('guest-cancel').onclick = function(){ modal.classList.re
 modal.onclick = function(e){ if (e.target === modal) modal.classList.remove('open'); };
 document.getElementById('guest-ok').onclick = function(){
   localStorage.setItem('splittr_guest', '1');
+  // Set a cookie too — server can't read localStorage, only cookies
+  var maxAge = 30 * 24 * 60 * 60;
+  document.cookie = 'splittr_guest=1; path=/; SameSite=Lax; Max-Age=' + maxAge;
   window.location.href = '/app';
 };
 </script>
