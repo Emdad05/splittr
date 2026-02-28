@@ -6,419 +6,460 @@
   <title>Splittr — Split expenses, settle fairly</title>
   <meta name="description" content="Track shared expenses across trips, flatmates and adventures. Free, private, synced to your Google Drive.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#07080d; --surface:#0e1019; --surface2:#141620;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+      --gold:#e8a020; --gold-dim:rgba(232,160,32,0.12); --gold-glow:rgba(232,160,32,0.22);
+      --teal:#19a09a; --teal-dim:rgba(25,160,154,0.12);
+      --text:#f0efe8; --text-dim:rgba(240,239,232,0.45); --text-mid:rgba(240,239,232,0.7);
+      --font-d:'Instrument Serif',Georgia,serif; --font:'DM Sans',system-ui,sans-serif;
+      --r:14px; --r-lg:22px;
+    }
+    .mi {
+      font-family:'Material Icons Round'; font-weight:normal; font-style:normal;
+      font-size:20px; line-height:1; letter-spacing:normal; text-transform:none;
+      display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr;
+      -webkit-font-smoothing:antialiased; user-select:none;
+    }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text); font-family:var(--font); min-height:100vh; overflow-x:hidden; }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      background: #0a0a0a;
-      color: #fff;
-      font-family: 'Inter', sans-serif;
+    /* BG ORBS */
+    .bg-orbs { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+    .orb { position:absolute; border-radius:50%; filter:blur(90px); opacity:0; }
+    .orb-1 {
+      width:700px; height:700px;
+      background:radial-gradient(circle,rgba(25,160,154,0.16) 0%,transparent 70%);
+      top:-200px; right:-120px;
+      animation:orbIn 1.4s 0.2s ease forwards, orbFloat1 20s 1.6s ease-in-out infinite;
     }
+    .orb-2 {
+      width:540px; height:540px;
+      background:radial-gradient(circle,rgba(232,160,32,0.13) 0%,transparent 70%);
+      bottom:-150px; left:-100px;
+      animation:orbIn 1.4s 0.4s ease forwards, orbFloat2 24s 1.8s ease-in-out infinite;
+    }
+    .orb-3 {
+      width:340px; height:340px;
+      background:radial-gradient(circle,rgba(25,160,154,0.09) 0%,transparent 70%);
+      top:55%; left:42%;
+      animation:orbIn 1.4s 0.6s ease forwards, orbFloat3 30s 2s ease-in-out infinite;
+    }
+    @keyframes orbIn { to{opacity:1} }
+    @keyframes orbFloat1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(28px,36px)} }
+    @keyframes orbFloat2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-22px,-28px)} }
+    @keyframes orbFloat3 { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(calc(-50% + 18px),calc(-50% + 22px))} }
 
-    /* ─── CANVAS (starfield) ─── */
-    #stars {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-    }
-
-    /* ─── NAV ─── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: 58px;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 22px;
-      background: rgba(10,10,10,0.6);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .nav-logo {
-      font-family: 'Sora', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      text-decoration: none;
-      letter-spacing: -0.3px;
-    }
-    .nav-logo em {
-      font-style: normal;
-      color: rgba(255,255,255,0.35);
-    }
-
-    /* Hamburger */
-    .ham {
-      width: 38px; height: 38px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 5px;
-      cursor: pointer; border: none; background: transparent;
-      border-radius: 8px; transition: background .2s;
-    }
-    .ham:hover { background: rgba(255,255,255,0.06); }
-    .ham span {
-      display: block; height: 1.5px; background: rgba(255,255,255,0.65);
-      border-radius: 2px; transition: all .3s cubic-bezier(.4,0,.2,1);
-    }
-    .ham span:nth-child(1) { width: 20px; }
-    .ham span:nth-child(2) { width: 14px; align-self: flex-end; }
-    .ham span:nth-child(3) { width: 20px; }
-    .ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); width: 20px; }
-    .ham.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); width: 20px; }
-
-    /* ─── SLIDE MENU ─── */
-    .ov {
-      position: fixed; inset: 0; z-index: 90;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-      opacity: 0; pointer-events: none; transition: opacity .3s;
-    }
-    .ov.open { opacity: 1; pointer-events: all; }
-
-    .smenu {
-      position: fixed; top: 0; right: 0; bottom: 0; z-index: 95;
-      width: min(290px, 88vw); background: #0d0d0d;
-      border-left: 1px solid rgba(255,255,255,0.06);
-      transform: translateX(100%);
-      transition: transform .36s cubic-bezier(.4,0,.2,1);
-      display: flex; flex-direction: column;
-      padding: 72px 0 36px;
-    }
-    .smenu.open { transform: translateX(0); }
-
-    .ml { font-size: 10px; font-weight: 600; letter-spacing: .14em;
-      text-transform: uppercase; color: rgba(255,255,255,0.25);
-      padding: 0 22px; margin: 22px 0 5px; }
-    .ml:first-child { margin-top: 0; }
-    .ma {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 22px; color: rgba(255,255,255,0.6);
-      text-decoration: none; font-size: 14px; font-weight: 400;
-      border-left: 2px solid transparent; transition: all .16s;
-    }
-    .ma:hover { color: #fff; background: rgba(255,255,255,0.04); border-left-color: rgba(255,255,255,0.2); }
-    .ma .mi { font-size: 16px; opacity: .5; flex-shrink: 0; }
-    .mdiv { height: 1px; background: rgba(255,255,255,0.06); margin: 14px 22px; }
-    .mft { margin-top: auto; padding: 0 22px; font-size: 11px; color: rgba(255,255,255,0.16); }
-
-    /* ─── MAIN ─── */
-    main {
-      position: relative; z-index: 1;
-      height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 58px 28px 0;
-      text-align: center;
+    .grain {
+      position:fixed; inset:0; z-index:1; pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size:200px 200px; opacity:0.022; mix-blend-mode:overlay;
     }
 
-    /* Badge */
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 100px;
-      font-size: 12px; font-weight: 500;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 30px;
-      animation: fup .7s both;
-      letter-spacing: .01em;
+    /* NAV */
+    nav.top-nav {
+      position:fixed; top:0; left:0; right:0; z-index:200; height:60px;
+      display:flex; align-items:center; justify-content:space-between; padding:0 32px;
+      transition:background 0.3s,border-color 0.3s;
     }
-    .bdot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: blink 2.2s infinite; }
-    @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.75)} }
+    nav.top-nav.scrolled {
+      background:rgba(7,8,13,0.85); backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px); border-bottom:1px solid var(--border);
+    }
+    .nav-logo { font-family:var(--font-d); font-style:italic; font-size:22px; color:var(--text); text-decoration:none; }
+    .nav-logo em { font-style:normal; color:var(--gold); }
+    .nav-right { display:flex; align-items:center; gap:10px; }
+    .nav-link { font-size:13px; font-weight:500; color:var(--text-dim); text-decoration:none; padding:6px 12px; border-radius:8px; transition:color .16s,background .16s; }
+    .nav-link:hover { color:var(--text); background:rgba(255,255,255,0.05); }
+    .nav-cta { font-size:13px; font-weight:600; color:#0a0a0a; background:var(--gold); border:none; border-radius:100px; padding:8px 20px; cursor:pointer; text-decoration:none; transition:filter .18s,transform .18s; }
+    .nav-cta:hover { filter:brightness(1.1); transform:translateY(-1px); }
 
-    /* ─── TITLE ─── */
-    /*
-      EXACT effect from screenshot:
-      Line 1 — bold, white on left fading to ~#888 on the right
-      Line 2 — same weight but slightly more muted overall
-      Both lines use a left→right white-to-gray gradient.
-      No metallic shimmer — just clean typographic fade.
-    */
-    .hero-title {
-      font-family: 'Sora', sans-serif;
-      font-size: clamp(46px, 9.5vw, 88px);
-      font-weight: 800;
-      line-height: 1.0;
-      letter-spacing: -2.5px;
-      margin-bottom: 0;
-      animation: fup .7s .07s both;
-    }
+    .ham { display:none; width:38px; height:38px; flex-direction:column; align-items:center; justify-content:center; gap:5px; cursor:pointer; border:none; background:transparent; border-radius:8px; transition:background .2s; }
+    .ham:hover { background:rgba(255,255,255,0.06); }
+    .ham span { display:block; height:1.5px; background:rgba(255,255,255,0.65); border-radius:2px; transition:all .3s cubic-bezier(.4,0,.2,1); }
+    .ham span:nth-child(1) { width:20px; }
+    .ham span:nth-child(2) { width:14px; align-self:flex-end; }
+    .ham span:nth-child(3) { width:20px; }
+    .ham.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); width:20px; }
+    .ham.open span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .ham.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); width:20px; }
 
-    .tl1 {
-      display: block;
-      /* White (#fff) left, fades to gray-ish (#777) right — matches screenshot exactly */
-      background: linear-gradient(90deg,
-        #ffffff 0%,
-        #ffffff 20%,
-        #cccccc 45%,
-        #999999 65%,
-        #777777 85%,
-        #666666 100%
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+    .ov { position:fixed; inset:0; z-index:190; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:opacity .3s; }
+    .ov.open { opacity:1; pointer-events:all; }
+    .smenu { position:fixed; top:0; right:0; bottom:0; z-index:195; width:min(290px,88vw); background:#0d0e15; border-left:1px solid var(--border); transform:translateX(100%); transition:transform .36s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column; padding:72px 0 36px; }
+    .smenu.open { transform:translateX(0); }
+    .ml { font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,0.2); padding:0 22px; margin:22px 0 5px; }
+    .ml:first-child { margin-top:0; }
+    .ma { display:flex; align-items:center; gap:12px; padding:12px 22px; color:rgba(255,255,255,0.55); text-decoration:none; font-size:14px; font-weight:400; border-left:2px solid transparent; transition:all .16s; }
+    .ma:hover { color:#fff; background:rgba(255,255,255,0.04); border-left-color:var(--gold); }
+    .ma .mi { font-size:16px; opacity:.5; flex-shrink:0; }
+    .mdiv { height:1px; background:var(--border); margin:14px 22px; }
+    .mft { margin-top:auto; padding:0 22px; font-size:11px; color:rgba(255,255,255,0.14); }
 
-    .tl2 {
-      display: block;
-      margin-top: 2px;
-      /* Second line slightly more muted — still white-left to gray-right */
-      background: linear-gradient(90deg,
-        #dddddd 0%,
-        #bbbbbb 25%,
-        #888888 55%,
-        #666666 80%,
-        #555555 100%
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+    /* HERO */
+    .hero { position:relative; z-index:10; min-height:100vh; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; max-width:1160px; margin:0 auto; padding:100px 40px 60px; }
+    .hero-left { display:flex; flex-direction:column; align-items:flex-start; }
 
-    /* Subtitle */
-    .hero-sub {
-      font-size: clamp(13.5px, 1.7vw, 16px);
-      color: rgba(255,255,255,0.38);
-      font-weight: 400;
-      max-width: 380px;
-      line-height: 1.72;
-      margin: 26px auto 38px;
-      animation: fup .7s .15s both;
-      letter-spacing: .01em;
-    }
+    .badge { display:inline-flex; align-items:center; gap:8px; padding:6px 14px; background:rgba(232,160,32,0.08); border:1px solid rgba(232,160,32,0.22); border-radius:100px; font-size:11.5px; font-weight:500; color:rgba(232,160,32,0.8); margin-bottom:32px; opacity:0; animation:riseIn .7s .1s cubic-bezier(.2,0,0,1) forwards; letter-spacing:.03em; }
+    .bdot { width:5px; height:5px; background:var(--gold); border-radius:50%; animation:blink 2.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:.25} }
 
-    /* ─── BUTTONS ─── */
-    .btns {
-      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
-      animation: fup .7s .22s both;
-    }
+    .hero-h { font-family:var(--font-d); font-size:clamp(46px,5.2vw,78px); font-weight:400; line-height:1.05; letter-spacing:-1.5px; color:var(--text); margin-bottom:6px; opacity:0; animation:riseIn .8s .2s cubic-bezier(.2,0,0,1) forwards; }
+    .hero-h em { font-style:italic; background:linear-gradient(135deg,var(--gold) 0%,#f5d07a 50%,var(--gold) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .hero-h .line2 { display:block; color:var(--text-mid); }
 
-    /* White pill — like screenshot "Get Started" */
-    .btn-g {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 14px 30px;
-      background: #ffffff;
-      color: #0a0a0a;
-      border-radius: 100px;
-      font-family: 'Sora', sans-serif;
-      font-size: 14px; font-weight: 700;
-      text-decoration: none; border: none; cursor: pointer;
-      transition: all .22s;
-      letter-spacing: -.01em;
-      position: relative; overflow: hidden;
-    }
-    .btn-g::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
-      transform: translateX(-120%);
-      transition: transform .5s;
-    }
-    .btn-g:hover::after { transform: translateX(120%); }
-    .btn-g:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,255,255,.15); }
+    .hero-sub { font-size:clamp(14px,1.4vw,16px); color:var(--text-dim); font-weight:400; max-width:400px; line-height:1.75; margin:22px 0 40px; opacity:0; animation:riseIn .8s .32s cubic-bezier(.2,0,0,1) forwards; }
 
-    .btn-x {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 14px 28px;
-      background: transparent;
-      color: rgba(255,255,255,0.5);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 100px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px; font-weight: 400;
-      text-decoration: none; cursor: pointer;
-      transition: all .22s;
-    }
-    .btn-x:hover { border-color: rgba(255,255,255,.25); color: rgba(255,255,255,.85); background: rgba(255,255,255,.04); transform: translateY(-2px); }
+    .btns { display:flex; gap:12px; flex-wrap:wrap; opacity:0; animation:riseIn .8s .44s cubic-bezier(.2,0,0,1) forwards; }
 
-    /* ─── FEATURE STRIP ─── */
-    .fstrip {
-      display: flex;
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 14px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.018);
-      margin-top: 48px;
-      max-width: 640px; width: 100%;
-      animation: fup .7s .3s both;
-    }
-    .fi {
-      flex: 1; padding: 16px 8px;
-      display: flex; flex-direction: column; align-items: center; gap: 6px;
-      border-right: 1px solid rgba(255,255,255,0.07);
-      transition: background .18s;
-    }
-    .fi:last-child { border-right: none; }
-    .fi:hover { background: rgba(255,255,255,0.04); }
-    .fi .mi { font-size: 18px; color: rgba(255,255,255,.3); }
-    .fi .lbl { font-size: 10.5px; color: rgba(255,255,255,.28); font-weight: 500; text-align: center; line-height: 1.35; }
+    .btn-primary { display:inline-flex; align-items:center; gap:10px; padding:14px 28px; background:var(--gold); color:#0a0a0a; border-radius:100px; font-family:var(--font); font-size:14px; font-weight:700; text-decoration:none; border:none; cursor:pointer; transition:filter .2s,transform .2s,box-shadow .2s; position:relative; overflow:hidden; }
+    .btn-primary::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent); transform:translateX(-120%); transition:transform .5s; }
+    .btn-primary:hover::after { transform:translateX(120%); }
+    .btn-primary:hover { filter:brightness(1.08); transform:translateY(-2px); box-shadow:0 8px 28px rgba(232,160,32,.3); }
+    .btn-primary .gsvg { width:17px; height:17px; flex-shrink:0; }
 
-    @keyframes fup { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
+    .btn-ghost { display:inline-flex; align-items:center; gap:8px; padding:14px 24px; background:transparent; color:var(--text-mid); border:1px solid var(--border2); border-radius:100px; font-family:var(--font); font-size:14px; font-weight:500; text-decoration:none; cursor:pointer; transition:all .2s; }
+    .btn-ghost:hover { border-color:rgba(255,255,255,.28); color:var(--text); background:rgba(255,255,255,.04); transform:translateY(-2px); }
 
-    .gsvg { width: 17px; height: 17px; flex-shrink: 0; }
+    .trust { display:flex; align-items:center; gap:18px; margin-top:32px; flex-wrap:wrap; opacity:0; animation:riseIn .8s .56s cubic-bezier(.2,0,0,1) forwards; }
+    .trust-item { display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--text-dim); }
+    .trust-item .mi { font-size:14px; color:var(--teal); }
+    .trust-sep { width:1px; height:14px; background:var(--border2); }
+
+    /* MOCK CARD */
+    .hero-right { display:flex; align-items:center; justify-content:center; opacity:0; animation:cardIn 1s .5s cubic-bezier(.2,0,0,1) forwards; }
+    @keyframes cardIn { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    .mock-wrap { position:relative; width:340px; }
+    .mock-card { background:var(--surface); border:1px solid var(--border2); border-radius:var(--r-lg); padding:24px; box-shadow:0 32px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,0.03); animation:cardLevitate 6s ease-in-out infinite; }
+    @keyframes cardLevitate { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-10px) rotate(0.4deg)} }
+    .mock-card-bg { position:absolute; top:-14px; left:18px; right:18px; height:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-lg); z-index:-1; animation:cardLevitate 6s .3s ease-in-out infinite; }
+    .mock-card-bg2 { position:absolute; top:-26px; left:32px; right:32px; height:100%; background:rgba(14,16,25,0.6); border:1px solid rgba(255,255,255,0.04); border-radius:var(--r-lg); z-index:-2; animation:cardLevitate 6s .6s ease-in-out infinite; }
+
+    .card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .card-group { display:flex; align-items:center; gap:10px; }
+    .card-icon { width:36px; height:36px; background:var(--teal-dim); border:1px solid rgba(25,160,154,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; }
+    .card-icon .mi { font-size:17px; color:var(--teal); }
+    .card-group-name { font-size:14px; font-weight:600; color:var(--text); }
+    .card-group-sub { font-size:11px; color:var(--text-dim); margin-top:1px; }
+    .card-badge { font-size:10px; font-weight:600; padding:4px 9px; border-radius:100px; background:rgba(34,197,94,0.12); color:#4ade80; border:1px solid rgba(34,197,94,0.2); }
+    .card-total-label { font-size:11px; color:var(--text-dim); margin-bottom:4px; }
+    .card-total { font-family:var(--font-d); font-size:34px; color:var(--text); letter-spacing:-1px; }
+    .card-total em { font-style:normal; font-size:18px; color:var(--text-dim); }
+    .card-divider { height:1px; background:var(--border); margin:18px 0; }
+    .card-expenses { display:flex; flex-direction:column; gap:10px; margin-bottom:18px; }
+    .card-row { display:flex; align-items:center; gap:10px; }
+    .card-row-icon { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .card-row-icon .mi { font-size:14px; }
+    .card-row-info { flex:1; }
+    .card-row-name { font-size:12.5px; font-weight:500; color:var(--text); }
+    .card-row-payer { font-size:10.5px; color:var(--text-dim); }
+    .card-row-amt { font-size:13px; font-weight:600; color:var(--text); }
+    .card-settle { background:rgba(232,160,32,0.07); border:1px solid rgba(232,160,32,0.18); border-radius:10px; padding:10px 12px; display:flex; align-items:center; gap:8px; }
+    .card-settle .mi { font-size:15px; color:var(--gold); }
+    .card-settle-text { font-size:11.5px; color:var(--text-dim); }
+    .card-settle-text strong { color:var(--gold); font-weight:600; }
+
+    @keyframes riseIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* SECTIONS */
+    .section { position:relative; z-index:10; max-width:1100px; margin:0 auto; padding:80px 40px; }
+    .section-label { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--teal); margin-bottom:16px; }
+    .section-label::before { content:''; width:24px; height:1px; background:var(--teal); }
+    .section-title { font-family:var(--font-d); font-size:clamp(30px,3.2vw,50px); font-weight:400; line-height:1.1; letter-spacing:-0.8px; color:var(--text); margin-bottom:14px; }
+    .section-title em { font-style:italic; color:var(--text-dim); }
+    .section-sub { font-size:15px; color:var(--text-dim); max-width:480px; line-height:1.7; margin-bottom:52px; }
+
+    /* FEAT GRID */
+    .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .feat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:26px 24px; transition:border-color .22s,background .22s,transform .22s; }
+    .feat-card:hover { border-color:var(--border2); background:var(--surface2); transform:translateY(-3px); }
+    .feat-card.wide { grid-column:span 2; }
+    .feat-card.gold-accent { border-color:rgba(232,160,32,0.18); }
+    .feat-card.gold-accent:hover { border-color:rgba(232,160,32,0.35); }
+    .feat-icon { width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center; margin-bottom:18px; }
+    .feat-icon .mi { font-size:20px; }
+    .feat-icon.teal { background:var(--teal-dim); } .feat-icon.teal .mi { color:var(--teal); }
+    .feat-icon.gold { background:var(--gold-dim); } .feat-icon.gold .mi { color:var(--gold); }
+    .feat-icon.muted { background:rgba(255,255,255,0.05); } .feat-icon.muted .mi { color:rgba(255,255,255,0.45); }
+    .feat-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:7px; }
+    .feat-desc { font-size:13px; color:var(--text-dim); line-height:1.65; }
+
+    /* HOW */
+    .how-section { position:relative; z-index:10; padding:60px 40px 100px; }
+    .how-inner { max-width:1100px; margin:0 auto; }
+    .how-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative; margin-top:56px; }
+    .how-steps::before { content:''; position:absolute; top:22px; left:calc(16.66% + 20px); right:calc(16.66% + 20px); height:1px; background:linear-gradient(90deg,var(--teal),var(--gold)); opacity:0.3; }
+    .how-step { display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 24px; }
+    .how-num { width:44px; height:44px; border-radius:50%; background:var(--surface2); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-family:var(--font-d); font-size:17px; color:var(--text); margin-bottom:20px; position:relative; z-index:1; }
+    .how-step:nth-child(2) .how-num { border-color:rgba(232,160,32,0.4); background:var(--gold-dim); color:var(--gold); }
+    .how-step-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:8px; }
+    .how-step-desc { font-size:13px; color:var(--text-dim); line-height:1.65; }
+
+    /* CTA */
+    .cta-section { position:relative; z-index:10; padding:40px 40px 100px; }
+    .cta-inner { max-width:700px; margin:0 auto; text-align:center; background:var(--surface); border:1px solid var(--border2); border-radius:28px; padding:60px 48px; position:relative; overflow:hidden; }
+    .cta-inner::before { content:''; position:absolute; top:-60px; left:50%; transform:translateX(-50%); width:260px; height:260px; background:radial-gradient(circle,var(--gold-glow) 0%,transparent 70%); pointer-events:none; }
+    .cta-title { font-family:var(--font-d); font-size:clamp(26px,2.8vw,40px); font-weight:400; color:var(--text); line-height:1.1; letter-spacing:-0.8px; margin-bottom:14px; position:relative; }
+    .cta-sub { font-size:14px; color:var(--text-dim); line-height:1.7; margin-bottom:36px; position:relative; }
+    .cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; position:relative; }
+
+    /* FOOTER */
+    .footer-wrap { position:relative; z-index:10; border-top:1px solid var(--border); max-width:1160px; margin:0 auto; }
+    footer { padding:24px 40px; display:flex; align-items:center; justify-content:space-between; }
+    .foot-logo { font-family:var(--font-d); font-style:italic; font-size:16px; color:var(--text-dim); text-decoration:none; }
+    .foot-logo em { font-style:normal; color:var(--gold); }
+    .foot-links { display:flex; gap:20px; }
+    .foot-link { font-size:12px; color:rgba(255,255,255,0.2); text-decoration:none; transition:color .15s; }
+    .foot-link:hover { color:var(--text-dim); }
+    .foot-copy { font-size:12px; color:rgba(255,255,255,0.15); }
+
+    /* RESPONSIVE */
+    @media (max-width:860px) {
+      .hero { grid-template-columns:1fr; padding:90px 24px 50px; text-align:center; gap:50px; }
+      .hero-left { align-items:center; }
+      .hero-sub { text-align:center; }
+      .trust { justify-content:center; }
+      .hero-right { order:-1; }
+      .mock-wrap { width:300px; }
+      .how-steps::before { display:none; }
+      .how-steps,.feat-grid { grid-template-columns:1fr; }
+      .feat-card.wide { grid-column:span 1; }
+      .how-step { padding:0; margin-bottom:40px; }
+      .section,.how-section,.cta-section { padding-left:20px; padding-right:20px; }
+      .nav-link { display:none; }
+      .ham { display:flex; }
+      .nav-cta { display:none; }
+      footer { flex-direction:column; gap:14px; text-align:center; padding:24px 20px; }
+      .foot-links { flex-wrap:wrap; justify-content:center; }
+    }
+    @media (min-width:861px) and (max-width:1060px) {
+      .feat-grid { grid-template-columns:repeat(2,1fr); }
+      .feat-card.wide { grid-column:span 1; }
+    }
   </style>
 </head>
 <body>
+<div class="bg-orbs" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
 
-<!-- Starfield canvas -->
-<canvas id="stars"></canvas>
-
-<!-- NAV -->
-<nav>
-  <a href="/" class="nav-logo">Splittr<em> ·</em></a>
-  <button class="ham" id="ham" aria-label="Menu" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </button>
+<nav class="top-nav" id="topNav">
+  <a href="/" class="nav-logo">Split<em>tr</em></a>
+  <div class="nav-right">
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="/login" class="nav-cta">Get Started</a>
+    <button class="ham" id="ham" aria-label="Menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
 
-<!-- OVERLAY + MENU -->
 <div class="ov" id="ov" onclick="closeMenu()"></div>
-<nav class="smenu" id="smenu">
+<aside class="smenu" id="smenu" role="navigation" aria-label="Mobile menu">
   <div class="ml">App</div>
   <a href="/app" class="ma" onclick="closeMenu()"><span class="mi">grid_view</span>Open App</a>
-
   <div class="mdiv"></div>
-
-  <div class="ml">Guide</div>
-  <a href="/how-to-use" class="ma" onclick="closeMenu()"><span class="mi">help_outline</span>How to Use</a>
-  <a href="/features" class="ma" onclick="closeMenu()"><span class="mi">auto_awesome</span>All Features</a>
-
+  <div class="ml">Explore</div>
+  <a href="#features" class="ma" onclick="closeMenu()"><span class="mi">auto_awesome</span>Features</a>
+  <a href="#how" class="ma" onclick="closeMenu()"><span class="mi">help_outline</span>How it works</a>
   <div class="mdiv"></div>
-
   <div class="ml">Legal</div>
   <a href="/privacy" class="ma" onclick="closeMenu()"><span class="mi">shield</span>Privacy Policy</a>
   <a href="/terms" class="ma" onclick="closeMenu()"><span class="mi">gavel</span>Terms of Service</a>
-
   <div class="mft">© 2025 Splittr &nbsp;·&nbsp; Free forever</div>
-</nav>
+</aside>
 
-<!-- HERO -->
-<main>
-  <div class="badge">
-    <span class="bdot"></span>
-    Free &nbsp;·&nbsp; No account required &nbsp;·&nbsp; Private
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="hero-left">
+    <div class="badge"><span class="bdot" aria-hidden="true"></span>Free &nbsp;·&nbsp; No account required &nbsp;·&nbsp; Private</div>
+    <h1 class="hero-h" id="hero-heading">
+      Split expenses,<br>
+      <em>settle fairly.</em>
+      <span class="line2">No awkward math.</span>
+    </h1>
+    <p class="hero-sub">Track shared costs across trips, flatmates &amp; adventures. The maths is handled — your friendships stay intact.</p>
+    <div class="btns">
+      <a href="/login" class="btn-primary">
+        Get Started â it's free
+        <span class="mi" style="font-size:18px">arrow_forward</span>
+      </a>
+    </div>
+    <div class="trust">
+      <span class="trust-item"><span class="mi" aria-hidden="true">cloud_sync</span>Drive sync</span>
+      <span class="trust-sep" aria-hidden="true"></span>
+      <span class="trust-item"><span class="mi" aria-hidden="true">picture_as_pdf</span>PDF &amp; CSV</span>
+      <span class="trust-sep" aria-hidden="true"></span>
+      <span class="trust-item"><span class="mi" aria-hidden="true">currency_exchange</span>10+ currencies</span>
+    </div>
   </div>
 
-  <h1 class="hero-title">
-    <span class="tl1">Split expenses,</span>
-    <span class="tl2">settle fairly.</span>
-  </h1>
-
-  <p class="hero-sub">
-    Track shared costs across trips, flatmates &amp; adventures. The maths is handled — your friendships stay intact.
-  </p>
-
-  <div class="btns">
-    <a href="/api/auth/url" class="btn-g">
-      <svg class="gsvg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      Sign in with Google
-    </a>
-    <a href="/app" class="btn-x" id="guestBtn">Continue as Guest</a>
+  <div class="hero-right" aria-hidden="true">
+    <div class="mock-wrap">
+      <div class="mock-card-bg2"></div>
+      <div class="mock-card-bg"></div>
+      <div class="mock-card">
+        <div class="card-header">
+          <div class="card-group">
+            <div class="card-icon"><span class="mi">flight_takeoff</span></div>
+            <div>
+              <div class="card-group-name">Bali Trip 2025</div>
+              <div class="card-group-sub">4 members · 8 expenses</div>
+            </div>
+          </div>
+          <span class="card-badge">Settled ✓</span>
+        </div>
+        <div class="card-total-label">Total Expenses</div>
+        <div class="card-total"><em>₹</em> 48,240</div>
+        <div class="card-divider"></div>
+        <div class="card-expenses">
+          <div class="card-row">
+            <div class="card-row-icon" style="background:rgba(59,130,246,0.12)"><span class="mi" style="color:#60a5fa;font-size:14px">hotel</span></div>
+            <div class="card-row-info"><div class="card-row-name">Hotel Alaya</div><div class="card-row-payer">Paid by Ravi</div></div>
+            <div class="card-row-amt">₹18,400</div>
+          </div>
+          <div class="card-row">
+            <div class="card-row-icon" style="background:rgba(234,179,8,0.12)"><span class="mi" style="color:#facc15;font-size:14px">restaurant</span></div>
+            <div class="card-row-info"><div class="card-row-name">Beach Dinner</div><div class="card-row-payer">Paid by Priya</div></div>
+            <div class="card-row-amt">₹6,800</div>
+          </div>
+          <div class="card-row">
+            <div class="card-row-icon" style="background:rgba(34,197,94,0.1)"><span class="mi" style="color:#4ade80;font-size:14px">directions_car</span></div>
+            <div class="card-row-info"><div class="card-row-name">Taxi &amp; Fuel</div><div class="card-row-payer">Paid by Arjun</div></div>
+            <div class="card-row-amt">₹3,200</div>
+          </div>
+        </div>
+        <div class="card-settle">
+          <span class="mi">handshake</span>
+          <div class="card-settle-text">Priya owes <strong>₹4,860</strong> to Ravi &amp; Arjun</div>
+        </div>
+      </div>
+    </div>
   </div>
+</section>
 
-  <div class="fstrip">
-    <div class="fi"><span class="mi">receipt_long</span><span class="lbl">Expense<br>Tracking</span></div>
-    <div class="fi"><span class="mi">handshake</span><span class="lbl">Smart<br>Settlements</span></div>
-    <div class="fi"><span class="mi">cloud_sync</span><span class="lbl">Drive<br>Backup</span></div>
-    <div class="fi"><span class="mi">currency_exchange</span><span class="lbl">10+<br>Currencies</span></div>
-    <div class="fi"><span class="mi">picture_as_pdf</span><span class="lbl">PDF<br>Export</span></div>
+<section class="section" id="features" aria-labelledby="feat-heading">
+  <div class="section-label">Everything you need</div>
+  <h2 class="section-title" id="feat-heading">Built for real trips,<br><em>not spreadsheets.</em></h2>
+  <p class="section-sub">Every feature designed around how groups actually split things — messy, unequal, and across different currencies.</p>
+  <div class="feat-grid">
+    <div class="feat-card gold-accent wide">
+      <div class="feat-icon gold"><span class="mi">handshake</span></div>
+      <div class="feat-title">Smart Settlements</div>
+      <div class="feat-desc">Splittr minimises the number of transactions needed to settle all debts. No one pays more times than they have to — the algorithm figures out the optimal path automatically.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon teal"><span class="mi">cloud_sync</span></div>
+      <div class="feat-title">Google Drive Backup</div>
+      <div class="feat-desc">Your data lives in a hidden app folder in your own Drive. No Splittr servers, no data harvesting — private by architecture.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon muted"><span class="mi">receipt_long</span></div>
+      <div class="feat-title">Flexible Split Modes</div>
+      <div class="feat-desc">Split equally, or set custom amounts per person. Perfect for when one person only had a salad.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon teal"><span class="mi">currency_exchange</span></div>
+      <div class="feat-title">10+ Currencies</div>
+      <div class="feat-desc">INR, USD, EUR, GBP, JPY, CAD, AUD and more. Each group has its own independent currency setting.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon gold"><span class="mi">picture_as_pdf</span></div>
+      <div class="feat-title">PDF &amp; CSV Export</div>
+      <div class="feat-desc">Generate a full expense report as PDF, or export CSV for your own records and spreadsheets.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon muted"><span class="mi">bar_chart</span></div>
+      <div class="feat-title">Spending Stats</div>
+      <div class="feat-desc">Per-group stats showing who spent what, category breakdowns, and a full timeline of expenses.</div>
+    </div>
   </div>
-</main>
+</section>
+
+<section class="how-section" id="how" aria-labelledby="how-heading">
+  <div class="how-inner">
+    <div class="section-label">Simple flow</div>
+    <h2 class="section-title" id="how-heading">Up and running<br><em>in two minutes.</em></h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <div class="how-step-title">Create a group</div>
+        <div class="how-step-desc">Name your trip or flatmate group, pick a currency, and add everyone who's splitting costs.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <div class="how-step-title">Log expenses</div>
+        <div class="how-step-desc">Add expenses as they happen — who paid, who was involved, and optionally a category.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <div class="how-step-title">Settle up</div>
+        <div class="how-step-desc">Splittr calculates the minimum transfers needed. Record payments as they happen and mark done.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" aria-labelledby="cta-heading">
+  <div class="cta-inner">
+    <h2 class="cta-title" id="cta-heading">Ready to split fairly?</h2>
+    <p class="cta-sub">Sign in with Google for Drive sync, or jump straight in as a guest — no account needed ever.</p>
+    <div class="cta-btns">
+      <a href="/login" class="btn-primary">
+        Get Started â it's free
+        <span class="mi" style="font-size:18px">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="footer-wrap">
+  <footer>
+    <a href="/" class="foot-logo">Split<em>tr</em></a>
+    <div class="foot-links">
+      <a href="/privacy" class="foot-link">Privacy</a>
+      <a href="/terms" class="foot-link">Terms</a>
+      <a href="#features" class="foot-link">Features</a>
+    </div>
+    <span class="foot-copy">© 2025 Splittr · Free forever</span>
+  </footer>
+</div>
 
 <script>
-/* ─── STARFIELD ─── */
 (function(){
-  const canvas = document.getElementById('stars');
-  const ctx = canvas.getContext('2d');
-
-  let W, H, stars = [];
-
-  function resize(){
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-
-  function mkStar(){
-    return {
-      x: Math.random() * W,
-      y: Math.random() * H,
-      r: Math.random() * 1.6 + 0.2,        // radius 0.2–1.8
-      o: Math.random() * 0.55 + 0.08,      // base opacity 0.08–0.63
-      speed: Math.random() * 0.18 + 0.04,  // drift speed
-      twinkleSpeed: Math.random() * 0.012 + 0.004,
-      twinklePhase: Math.random() * Math.PI * 2,
-    };
-  }
-
-  function init(){
-    resize();
-    stars = [];
-    const count = Math.floor((W * H) / 5000);  // density relative to screen size
-    for(let i = 0; i < count; i++) stars.push(mkStar());
-  }
-
-  let frame = 0;
-  function draw(){
-    ctx.clearRect(0, 0, W, H);
-    frame++;
-
-    for(const s of stars){
-      // Gentle twinkle
-      const twinkle = Math.sin(frame * s.twinkleSpeed + s.twinklePhase);
-      const opacity = Math.max(0.04, s.o + twinkle * 0.28);
-
-      // Slow upward drift
-      s.y -= s.speed;
-      if(s.y < -4) { s.y = H + 4; s.x = Math.random() * W; }
-
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${opacity.toFixed(3)})`;
-      ctx.fill();
-    }
-
-    requestAnimationFrame(draw);
-  }
-
-  window.addEventListener('resize', ()=>{ resize(); init(); }, { passive: true });
-  init();
-  draw();
+  var nav=document.getElementById('topNav');
+  function check(){ nav.classList.toggle('scrolled',window.scrollY>20); }
+  window.addEventListener('scroll',check,{passive:true});
+  check();
 })();
 
-/* ─── MENU ─── */
 function toggleMenu(){
-  const h=document.getElementById('ham'),
-        m=document.getElementById('smenu'),
-        o=document.getElementById('ov');
-  h.classList.toggle('open');
-  m.classList.toggle('open');
-  o.classList.toggle('open');
-  document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
+  var h=document.getElementById('ham'),m=document.getElementById('smenu'),o=document.getElementById('ov');
+  h.classList.toggle('open'); m.classList.toggle('open'); o.classList.toggle('open');
+  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
 }
 function closeMenu(){
   document.getElementById('ham').classList.remove('open');
   document.getElementById('smenu').classList.remove('open');
   document.getElementById('ov').classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.overflow='';
 }
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeMenu(); });
 
-/* ─── GUEST BUTTON ─── */
-document.getElementById('guestBtn').addEventListener('click', function(e){
-  e.preventDefault();
-  localStorage.setItem('splittr_guest','1');
-  window.location.href = '/app';
+
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var t=document.querySelector(this.getAttribute('href'));
+    if(t){ e.preventDefault(); closeMenu(); t.scrollIntoView({behavior:'smooth'}); }
+  });
 });
 </script>
 </body>
