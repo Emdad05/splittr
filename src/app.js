@@ -144,6 +144,10 @@ let _syncTimer   = null;
   try{ showFab('home'); }catch(e){}
   // Only attempt Drive sync if we have a real session cookie (not just guest)
   if(!isGuest && hasSess){
+    // Hide auth overlay and mark as authed immediately so the login screen
+    // doesn't flash on reload (the real data is synced in background below)
+    const ao=document.getElementById('auth-overlay'); if(ao) ao.classList.add('hidden');
+    document.documentElement.classList.add('splittr-authed');
     requestAnimationFrame(()=>{ try{_renderUserChip();}catch(e){} });
     setTimeout(()=>_driveSync(), 1000); // background Drive sync
   }
