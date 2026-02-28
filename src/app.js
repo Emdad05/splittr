@@ -239,6 +239,11 @@ Q('signout-confirm-cancel').onclick=()=>Q('signout-confirm-ov').classList.remove
 Q('signout-confirm-ov').addEventListener('click',e=>{ if(e.target===Q('signout-confirm-ov')) Q('signout-confirm-ov').classList.remove('open'); });
 Q('force-sync-btn').onclick=async()=>{ Q('user-menu').classList.remove('open'); await _apiSave(true); snack('Synced to Drive ✓'); };
 
+/* ── User chip → toggle profile menu ── */
+Q('user-chip').onclick=(e)=>{ e.stopPropagation(); Q('user-menu').classList.toggle('open'); };
+Q('signout-btn').onclick=()=>{ Q('user-menu').classList.remove('open'); Q('signout-confirm-ov').classList.add('open'); };
+document.addEventListener('click',(e)=>{ const m=Q('user-menu'); if(m&&m.classList.contains('open')&&!m.contains(e.target)) m.classList.remove('open'); });
+
 /* ══════════════════════════════════════════════════════════════════
    DRIVE SYNC — server handles tokens + refresh automatically
    FIX: tokens never expire from user's perspective (server refreshes)
