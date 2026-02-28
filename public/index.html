@@ -169,61 +169,157 @@ nav.stuck {
 .ham {
   display: none; flex-direction: column; align-items: center;
   justify-content: center; gap: 5px; width: 40px; height: 40px;
-  border: none; background: transparent; cursor: pointer;
-  border-radius: 10px; transition: background 0.2s;
+  border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.05); cursor: pointer;
+  border-radius: 10px; transition: background 0.18s, border-color 0.18s;
 }
-.ham:hover { background: var(--glass-2); }
+.ham:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.18); }
 .ham span {
   display: block; height: 1.5px;
-  background: var(--t2); border-radius: 2px;
+  background: rgba(255,255,255,0.65); border-radius: 2px;
   transition: all 0.3s cubic-bezier(.4,0,.2,1);
 }
-.ham span:nth-child(1) { width: 22px; }
-.ham span:nth-child(2) { width: 15px; align-self: flex-end; }
-.ham span:nth-child(3) { width: 22px; }
-.ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); width: 22px; }
+.ham span:nth-child(1) { width: 18px; }
+.ham span:nth-child(2) { width: 13px; align-self: flex-end; }
+.ham span:nth-child(3) { width: 18px; }
+.ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); width: 18px; }
 .ham.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); width: 22px; }
+.ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); width: 18px; }
 
 /* ============================================================
-   MOBILE MENU
+   MOBILE MENU — frosted glass, black/white palette
    ============================================================ */
+
+/* Scrim — dark blur overlay on the left side */
 .mob-ov {
   position: fixed; inset: 0; z-index: 290;
-  background: rgba(0,0,0,0.65);
-  opacity: 0; pointer-events: none; transition: opacity 0.28s;
+  background: rgba(0,0,0,0.55);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.30s ease;
 }
 .mob-ov.open { opacity: 1; pointer-events: all; }
 
+/* Drawer shell — solid dark base, NO backdrop-filter (Android bug) */
 .mob-menu {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 295;
-  width: min(300px, 88vw);
-  background: #181C27;
-  border-left: 1px solid var(--border);
-  transform: translateX(110%);
-  transition: transform 0.34s cubic-bezier(.4,0,.2,1);
+  width: min(320px, 92vw);
+  background: #0E1018;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  transform: translateX(105%);
+  transition: transform 0.36s cubic-bezier(0.32,0,0.15,1);
   display: flex; flex-direction: column;
-  padding: 76px 0 40px;
+  overflow: hidden;
+}
+.mob-menu.open { transform: translateX(0); box-shadow: -24px 0 80px rgba(0,0,0,0.60); }
+
+/* Frosted noise texture via pseudo — gives depth without backdrop-filter */
+.mob-menu::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 60%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 4px);
+  pointer-events: none;
+}
+
+/* Inner scroll container */
+.mob-inner {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  height: 100%;
+  padding: 0 0 32px;
   overflow-y: auto;
 }
-.mob-menu.open { transform: translateX(0); }
 
+/* Top bar inside drawer */
+.mob-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.mob-brand {
+  font-size: 17px; font-weight: 800; letter-spacing: -0.4px;
+  color: #fff;
+}
+.mob-brand span { color: rgba(140,155,255,0.9); }
+
+.mob-close {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 10px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.70);
+  font-family: 'Material Icons Round';
+  font-size: 18px; line-height: 1;
+  font-style: normal; font-weight: normal;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+  -webkit-font-smoothing: antialiased;
+}
+.mob-close:hover { background: rgba(255,255,255,0.13); color: #fff; }
+
+/* Section labels */
 .mob-sec {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.13em;
-  text-transform: uppercase; color: var(--t3);
-  padding: 0 24px; margin: 20px 0 6px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding: 22px 20px 8px;
 }
-.mob-link {
-  display: flex; align-items: center; gap: 12px;
-  padding: 11px 24px; color: var(--t2); font-size: 14px; font-weight: 500;
-  border-left: 2px solid transparent;
-  transition: all 0.15s;
-}
-.mob-link:hover { color: var(--t1); background: var(--glass-1); border-left-color: var(--accent); }
-.mob-link .mi { font-size: 17px; color: var(--t3); }
 
-.mob-div { height: 1px; background: var(--border); margin: 12px 24px; }
-.mob-foot { margin-top: auto; padding: 0 24px; font-size: 11px; color: var(--t3); }
+/* Nav links — card-style rows */
+.mob-link {
+  display: flex; align-items: center; gap: 14px;
+  margin: 3px 12px;
+  padding: 12px 14px;
+  color: rgba(255,255,255,0.75);
+  font-size: 14.5px; font-weight: 500;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+  text-decoration: none;
+}
+.mob-link:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.09);
+  color: #fff;
+  text-decoration: none;
+}
+.mob-link .mi {
+  font-size: 18px;
+  color: rgba(255,255,255,0.35);
+  width: 22px; text-align: center;
+  flex-shrink: 0;
+  transition: color 0.14s;
+}
+.mob-link:hover .mi { color: rgba(255,255,255,0.70); }
+
+/* Primary CTA link inside menu */
+.mob-link.mob-cta {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
+  color: #fff;
+  font-weight: 600;
+}
+.mob-link.mob-cta .mi { color: rgba(255,255,255,0.60); }
+.mob-link.mob-cta:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.18); }
+
+/* Divider */
+.mob-div {
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin: 10px 20px;
+}
+
+/* Footer */
+.mob-foot {
+  margin-top: auto;
+  padding: 20px 20px 4px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.20);
+  letter-spacing: 0.02em;
+}
 
 /* ============================================================
    HERO — centered, no card
@@ -541,27 +637,45 @@ nav.stuck {
 <!-- Mobile overlay + drawer -->
 <div class="mob-ov" id="mobOv" onclick="closeMenu()"></div>
 <aside class="mob-menu" id="mobMenu" aria-label="Mobile navigation">
-  <div class="mob-sec">App</div>
-  <a href="/login" class="mob-link" onclick="closeMenu()">
-    <span class="mi">rocket_launch</span>Get Started
-  </a>
-  <div class="mob-div"></div>
-  <div class="mob-sec">Explore</div>
-  <a href="#features" class="mob-link" onclick="closeMenu()">
-    <span class="mi">auto_awesome</span>Features
-  </a>
-  <a href="#how" class="mob-link" onclick="closeMenu()">
-    <span class="mi">help_outline</span>How it works
-  </a>
-  <div class="mob-div"></div>
-  <div class="mob-sec">Legal</div>
-  <a href="/privacy" class="mob-link" onclick="closeMenu()">
-    <span class="mi">shield</span>Privacy Policy
-  </a>
-  <a href="/terms" class="mob-link" onclick="closeMenu()">
-    <span class="mi">gavel</span>Terms of Service
-  </a>
-  <div class="mob-foot">&#169; 2025 Splittr &nbsp;&middot;&nbsp; Free forever</div>
+  <div class="mob-inner">
+
+    <!-- Drawer top bar -->
+    <div class="mob-topbar">
+      <span class="mob-brand">Split<span>tr</span></span>
+      <button class="mob-close" onclick="closeMenu()" aria-label="Close menu">close</button>
+    </div>
+
+    <!-- App -->
+    <div class="mob-sec">App</div>
+    <a href="/login" class="mob-link mob-cta" onclick="closeMenu()">
+      <span class="mi">rocket_launch</span>Get Started
+    </a>
+
+    <div class="mob-div"></div>
+
+    <!-- Explore -->
+    <div class="mob-sec">Explore</div>
+    <a href="#features" class="mob-link" onclick="closeMenu()">
+      <span class="mi">auto_awesome</span>Features
+    </a>
+    <a href="#how" class="mob-link" onclick="closeMenu()">
+      <span class="mi">help_outline</span>How it works
+    </a>
+
+    <div class="mob-div"></div>
+
+    <!-- Legal -->
+    <div class="mob-sec">Legal</div>
+    <a href="/privacy" class="mob-link" onclick="closeMenu()">
+      <span class="mi">shield</span>Privacy Policy
+    </a>
+    <a href="/terms" class="mob-link" onclick="closeMenu()">
+      <span class="mi">gavel</span>Terms of Service
+    </a>
+
+    <div class="mob-foot">&#169; 2025 Splittr &nbsp;&middot;&nbsp; Free forever</div>
+
+  </div>
 </aside>
 
 <!-- ============================================================
