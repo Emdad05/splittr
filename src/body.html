@@ -1,0 +1,503 @@
+<!-- ══════════════════════════════════════════════════
+     AUTH OVERLAY — shown until user signs in
+     ══════════════════════════════════════════════════ -->
+<div id="auth-overlay">
+
+  <!-- Hero band with logo -->
+  <div class="auth-hero">
+    <div class="auth-hero-logo"><span>Split</span><em>tr</em></div>
+    <div class="auth-hero-tag">Split expenses, settle fairly</div>
+  </div>
+
+  <!-- Main content body -->
+  <div class="auth-body">
+
+    <!-- Feature highlights -->
+    <div class="auth-features">
+      <div class="auth-feature">
+        <div class="af-icon"><span class="mi">sync</span></div>
+        <div class="auth-feature-text">
+          <div class="auth-feature-label">Sync across all your devices</div>
+          <div class="auth-feature-sub">Access your lists from phone, tablet or desktop</div>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="af-icon"><span class="mi">lock</span></div>
+        <div class="auth-feature-text">
+          <div class="auth-feature-label">Private to you</div>
+          <div class="auth-feature-sub">Stored in your own hidden Google Drive folder</div>
+        </div>
+      </div>
+      <div class="auth-feature">
+        <div class="af-icon"><span class="mi">cloud_done</span></div>
+        <div class="auth-feature-text">
+          <div class="auth-feature-label">Automatic cloud backup</div>
+          <div class="auth-feature-sub">Your data is safe even if you clear browser storage</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Google sign-in — primary CTA -->
+    <button class="btn-google" id="google-signin-btn">
+      <div class="g-logo"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="G"></div>
+      <span id="google-btn-label">Sign in with Google</span>
+    </button>
+
+    <!-- Loading spinner -->
+    <div class="auth-loading" id="auth-loading">
+      <div class="auth-spinner"></div>
+      <div class="auth-loading-text" id="auth-loading-text">Signing in…</div>
+    </div>
+
+    <!-- Low-prominence guest option -->
+    <div class="auth-or"><span>or</span></div>
+    <button class="btn-guest" id="guest-btn">Continue without signing in</button>
+
+    <p class="auth-privacy">
+      Splittr uses a <b>hidden app folder</b> in your Drive — it won't appear in your files and other apps can't access it.
+    </p>
+
+  </div>
+</div>
+
+<!-- GUEST CONFIRM BOTTOM SHEET -->
+<div id="guest-confirm-ov" class="bottom-sheet-ov">
+  <div class="bottom-sheet">
+    <div class="bs-handle"></div>
+    <div class="bs-icon warn"><span class="mi">cloud_off</span></div>
+    <div class="bs-title">Continue without signing in?</div>
+    <div class="bs-body">Your data stays local — no cloud sync. But you can always back up and restore manually.</div>
+
+    <div class="bs-banner danger">
+      <span class="mi">warning</span>
+      <span>Data is <strong>only in this browser</strong>. Clearing browser data or switching devices will <strong>permanently erase</strong> everything.</span>
+    </div>
+
+    <div class="bs-info-rows">
+      <div class="bs-info-row">
+        <span class="mi">download</span>
+        <div class="bs-info-row-body">
+          <div class="bs-info-row-label">Export a JSON backup anytime</div>
+          <div class="bs-info-row-sub">Use "Backup JSON" in any group's actions menu to save your data locally</div>
+        </div>
+      </div>
+      <div class="bs-info-row">
+        <span class="mi">upload</span>
+        <div class="bs-info-row-body">
+          <div class="bs-info-row-label">Restore from backup later</div>
+          <div class="bs-info-row-sub">Use "Import JSON" to reload a previously saved backup at any time</div>
+        </div>
+      </div>
+      <div class="bs-info-row">
+        <span class="mi">login</span>
+        <div class="bs-info-row-body">
+          <div class="bs-info-row-label">Sign in later to enable cloud sync</div>
+          <div class="bs-info-row-sub">Tap "Sign in" in the warning banner at any time to upgrade to Drive backup</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bs-actions">
+      <button class="bs-btn-primary neutral" id="guest-confirm-ok">
+        <span class="mi">arrow_forward</span>Continue without signing in
+      </button>
+      <button class="bs-btn-secondary" id="guest-confirm-cancel">
+        <span class="mi">account_circle</span>Sign in with Google instead
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN OUT CONFIRM BOTTOM SHEET -->
+<div id="signout-confirm-ov" class="bottom-sheet-ov">
+  <div class="bottom-sheet">
+    <div class="bs-handle"></div>
+    <div class="bs-icon warn"><span class="mi">logout</span></div>
+    <div class="bs-title">Sign out of Splittr?</div>
+    <div class="bs-body">Your data is safely backed up in Google Drive and will be available when you sign back in.</div>
+
+    <div class="bs-banner success">
+      <span class="mi">cloud_done</span>
+      <span>All your groups and expenses are <strong>synced to your Drive</strong> — nothing will be lost.</span>
+    </div>
+
+    <div class="bs-actions">
+      <button class="bs-btn-primary danger" id="signout-confirm-ok">
+        <span class="mi">logout</span>Yes, sign me out
+      </button>
+      <button class="bs-btn-secondary" id="signout-confirm-cancel">
+        <span class="mi">close</span>Cancel, stay signed in
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- USER MENU (dropdown from avatar chip in top bar) -->
+<div class="user-menu" id="user-menu">
+  <!-- Profile header -->
+  <div class="um-profile-header">
+    <div class="um-avatar-wrap">
+      <div class="um-avatar-fallback default-icon" id="um-avatar-fallback"><span class="mi" style="font-size:24px">account_circle</span></div>
+      <img class="um-avatar-img" id="um-avatar-img" style="display:none" alt="avatar" referrerpolicy="no-referrer"
+        onerror="this.style.display='none';document.getElementById('um-avatar-fallback').style.display='flex'">
+    </div>
+    <div class="um-info">
+      <div class="um-info-name" id="um-name">—</div>
+      <div class="um-info-email" id="um-email">—</div>
+      <div class="um-info-sync" id="um-sync-row">
+        <span class="mi">cloud_done</span><span>Synced to Drive</span>
+      </div>
+    </div>
+  </div>
+  <button class="mi-item" id="force-sync-btn"><span class="mi">sync</span>Sync Now</button>
+  <div class="m-div"></div>
+  <button class="mi-item danger" id="signout-btn"><span class="mi">logout</span>Sign Out</button>
+</div>
+
+<div id="app">
+  <!-- HOME -->
+  <div id="page-home" class="page active">
+    <div class="top-bar" id="home-bar">
+      <div class="bar-title" style="font-family:var(--font-d);font-size:26px">Splittr</div>
+      <div class="offline-badge" id="offline-badge"><span class="mi">wifi_off</span>Offline</div>
+      <div class="sync-indicator" id="sync-indicator"><span class="mi">sync</span><span id="sync-label">Syncing…</span></div>
+      <div class="theme-toggle">
+        <span class="mi" id="theme-icon">light_mode</span>
+        <label class="sw" title="Toggle dark mode">
+          <input type="checkbox" id="theme-chk">
+          <span class="sw-track"></span>
+          <span class="sw-thumb"></span>
+        </label>
+      </div>
+      <!-- User chip (shown after sign-in) -->
+      <div class="user-chip" id="user-chip" style="display:none">
+        <div class="user-avatar-fallback default-icon" id="user-avatar-fallback"><span class="mi" style="font-size:22px">account_circle</span></div>
+        <img class="user-avatar" id="user-avatar-img" style="display:none" alt="avatar" referrerpolicy="no-referrer" onerror="this.style.display='none';const fb=document.getElementById('user-avatar-fallback');fb.className='user-avatar-fallback default-icon';fb.innerHTML='<span class=\'mi\' style=\'font-size:22px\'>account_circle</span>';fb.style.display='flex'">
+        <span class="user-name" id="user-display-name">User</span>
+      </div>
+    </div>
+    <div id="guest-warning" class="">
+      <span class="mi">warning</span>
+      <span>You're using <b>local storage only</b> — data will be lost if you clear browser data. <button id="guest-warning-signin">Sign in with Google</button> to back up safely.</span>
+    </div>
+    <div class="hero">
+      <div class="hero-t">Split expenses,<br><em>settle fairly</em></div>
+      <div class="hero-s">Track shared costs across trips, rooms &amp; adventures</div>
+    </div>
+    <div id="gc" class="gc"></div>
+    <div style="height:80px"></div>
+  </div>
+
+  <!-- GROUP DETAIL -->
+  <div id="page-group" class="page hidden slide-right">
+    <div class="top-bar" id="group-bar">
+      <button class="icon-btn" id="back-btn"><span class="mi">arrow_back</span></button>
+      <div class="bar-title" id="gbar-title">Group</div>
+      <button class="icon-btn" id="more-btn" title="Actions" style="color:var(--md-primary)"><span class="mi">grid_view</span></button>
+    </div>
+    <div class="tabs" id="gtabs">
+      <button class="tab-btn act" data-tab="expenses"><span class="mi">receipt_long</span>Expenses</button>
+      <button class="tab-btn" data-tab="members"><span class="mi">group</span>Members</button>
+      <button class="tab-btn" data-tab="stats"><span class="mi">bar_chart</span>Stats</button>
+      <button class="tab-btn" data-tab="settle"><span class="mi">handshake</span>Settle Up</button>
+    </div>
+    <div id="p-expenses" class="tab-panel act pb80"></div>
+    <div id="p-members"  class="tab-panel pb80"></div>
+    <div id="p-stats"    class="tab-panel pb80"></div>
+    <div id="p-settle"   class="tab-panel pb80"></div>
+  </div>
+</div>
+
+<!-- FAB -->
+<div id="fab-layer">
+  <button class="fab" id="fab-home"><span class="mi">add</span>New List</button>
+  <button class="fab fab-hidden" id="fab-exp"><span class="mi">add</span>Add Expense</button>
+</div>
+
+<!-- WIZARD -->
+<div class="ov" id="wiz-ov">
+  <div class="dlg" style="max-width:520px">
+    <div class="dh" style="padding-bottom:16px">
+      <div class="ws"><div class="wd act" id="wd0"></div><div class="wd" id="wd1"></div><div class="wd" id="wd2"></div></div>
+      <div class="dt" id="wiz-title">Create Expense List</div>
+    </div>
+    <div class="wz act" id="ws0">
+      <div class="dct" style="padding-top:0">
+        <p class="dc">Give your list a name and pick a currency.</p>
+        <div><label class="fl">List Name *</label><input class="fi" id="wn" placeholder="e.g. Bali Trip 2025" maxlength="60" autocomplete="off"></div>
+        <div><label class="fl">Currency</label>
+          <select class="fi" id="wcur">
+            <option value="INR" selected>🇮🇳 INR — Indian Rupee (₹)</option>
+            <option value="USD">🇺🇸 USD — US Dollar ($)</option>
+            <option value="EUR">🇪🇺 EUR — Euro (€)</option>
+            <option value="GBP">🇬🇧 GBP — British Pound (£)</option>
+            <option value="JPY">🇯🇵 JPY — Japanese Yen (¥)</option>
+            <option value="CAD">🇨🇦 CAD — Canadian Dollar (C$)</option>
+            <option value="AUD">🇦🇺 AUD — Australian Dollar (A$)</option>
+            <option value="SGD">🇸🇬 SGD — Singapore Dollar (S$)</option>
+            <option value="CHF">🇨🇭 CHF — Swiss Franc (Fr)</option>
+            <option value="MXN">🇲🇽 MXN — Mexican Peso ($)</option>
+          </select>
+        </div>
+      </div>
+      <div class="da"><button class="btn btn-x" id="wiz-cancel">Cancel</button><button class="btn btn-f" id="wn0"><span class="mi">arrow_forward</span>Next</button></div>
+    </div>
+    <div class="wz" id="ws1">
+      <div class="dct" style="padding-top:0">
+        <p class="dc">Choose an icon and color theme for your list.</p>
+        <div id="wiz-ith" class="ith-grid"></div>
+      </div>
+      <div class="da"><button class="btn btn-x" id="wb0">Back</button><button class="btn btn-f" id="wn1"><span class="mi">arrow_forward</span>Next</button></div>
+    </div>
+    <div class="wz" id="ws2">
+      <div class="dct" style="padding-top:0">
+        <p class="dc">Add people sharing expenses. You can add more later.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <input class="fi" id="wmi" placeholder="Member name" maxlength="40" autocomplete="off" autocapitalize="words">
+          <div style="display:flex;gap:8px;align-items:flex-end">
+            <div style="flex:1"><label class="fl" style="margin-bottom:4px">Join Date</label><input class="fi" id="wmi-date" type="date"></div>
+            <button class="btn btn-t btn-sm" id="wam" style="flex-shrink:0;margin-bottom:1px"><span class="mi">person_add</span>Add</button>
+          </div>
+        </div>
+        <div id="wmc" style="display:flex;flex-wrap:wrap;gap:8px;min-height:36px;padding:12px 0 0"></div>
+        <p class="ts tm"><span id="wmcnt">0</span> member(s) — more can be added later</p>
+      </div>
+      <div class="da"><button class="btn btn-x" id="wb1">Back</button><button class="btn btn-f" id="wcreate"><span class="mi">check</span>Create List</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT EXPENSE (updated with category + split mode) -->
+<div class="ov" id="exp-ov">
+  <div class="dlg" style="max-width:520px">
+    <div class="dh"><div class="dt" id="exp-title">Add Expense</div></div>
+    <div class="dct" style="padding-top:12px">
+      <div class="row" style="gap:12px;align-items:flex-start">
+        <div style="flex:1"><label class="fl">Amount *</label><input class="fi" id="ea" type="number" min="0.01" step="0.01" placeholder="0.00" inputmode="decimal"></div>
+        <div style="width:140px"><label class="fl">Date</label><input class="fi" id="ed" type="date"></div>
+      </div>
+      <div class="row" style="gap:12px;align-items:flex-start">
+        <div style="flex:1"><label class="fl">Description</label><input class="fi" id="en" placeholder="Dinner, Hotel, Gas…" maxlength="80"></div>
+        <div style="width:160px"><label class="fl">Category</label>
+          <select class="fi" id="ecat" style="height:56px"></select>
+        </div>
+      </div>
+      <div><label class="fl">Paid By *</label><div id="epc" style="display:flex;flex-wrap:wrap;gap:8px"></div></div>
+      <div>
+        <div class="row" style="justify-content:space-between;margin-bottom:8px">
+          <label class="fl" style="margin:0">Split Mode</label>
+        </div>
+        <div class="split-mode" style="margin-bottom:12px">
+          <button class="split-tab act" id="split-eq" type="button">Equal Split</button>
+          <button class="split-tab" id="split-uneq" type="button">Custom Amounts</button>
+        </div>
+        <!-- Equal split -->
+        <div id="eq-split-section">
+          <div class="row" style="justify-content:space-between;margin-bottom:8px">
+            <label class="fl" style="margin:0">Split Among *</label>
+            <button class="btn btn-x" id="esa" style="height:28px;font-size:12px;padding:0 8px">Select All</button>
+          </div>
+          <div id="esc" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        </div>
+        <!-- Unequal split -->
+        <div id="uneq-split-section" style="display:none">
+          <label class="fl" style="margin-bottom:8px">Custom amounts per person *</label>
+          <div class="custom-split-box" id="custom-split-rows"></div>
+          <div class="split-total-row">
+            <span class="ts tm">Total assigned:</span>
+            <span id="split-total-display" class="split-total-ok">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="da"><button class="btn btn-x" id="ecancel">Cancel</button><button class="btn btn-f" id="esave">Save Expense</button></div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="ov" id="conf-ov">
+  <div class="dlg" style="max-width:360px">
+    <div class="dh"><div class="di" id="cfi"></div><div class="dt" id="cft">Are you sure?</div></div>
+    <div class="db"><p class="dc" id="cft2"></p></div>
+    <div class="da"><button class="btn btn-x" id="cfcancel">Cancel</button><button class="btn" id="cfok">Confirm</button></div>
+  </div>
+</div>
+
+<!-- CAPTCHA DELETE -->
+<div class="ov" id="captcha-ov">
+  <div class="dlg" style="max-width:360px">
+    <div class="dh">
+      <div class="di" style="background:var(--md-error-container);color:var(--md-on-error-container)"><span class="mi">delete_forever</span></div>
+      <div class="dt" id="cap-title">Confirm Delete</div>
+    </div>
+    <div class="db"><p class="dc" id="cap-msg"></p></div>
+    <div class="dct" style="padding-top:4px">
+      <div class="captcha-box">
+        <div class="captcha-q" id="cap-q"></div>
+        <input class="fi" id="cap-ans" type="number" placeholder="Your answer" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+        <p class="captcha-hint">Solve the math above to proceed</p>
+      </div>
+    </div>
+    <div class="da"><button class="btn btn-x" id="cap-cancel">Cancel</button><button class="btn btn-ef" id="cap-ok"><span class="mi">arrow_forward</span>Next</button></div>
+  </div>
+</div>
+
+<!-- JOIN DATE EDIT -->
+<div class="ov" id="jd-ov">
+  <div class="dlg" style="max-width:400px">
+    <div class="dh">
+      <div class="di" style="background:var(--md-error-container);color:var(--md-on-error-container)"><span class="mi">edit_calendar</span></div>
+      <div class="dt" id="jd-title">Edit Join Date</div>
+    </div>
+    <div class="dct" style="padding-top:8px">
+      <div><label class="fl" id="jd-lbl" style="color:var(--md-error)">Join Date</label><input class="fi err" id="jd-inp" type="date"></div>
+      <div class="jd-warn danger" id="jd-warn"></div>
+    </div>
+    <div class="da"><button class="btn btn-x" id="jd-cancel">Cancel</button><button class="btn btn-ef" id="jd-ok" disabled><span class="mi">warning</span>Change Date</button></div>
+  </div>
+</div>
+
+<!-- RECORD SETTLEMENT DIALOG -->
+<div class="ov" id="sett-ov">
+  <div class="dlg" style="max-width:420px">
+    <div class="dh">
+      <div class="di" style="background:var(--md-success-container);color:var(--md-on-success-container)"><span class="mi">payments</span></div>
+      <div class="dt">Record Settlement</div>
+    </div>
+    <div class="dct" style="padding-top:8px">
+      <p class="dc">Record an offline payment. This reduces the balance between two people.</p>
+      <div><label class="fl">From (who paid)</label>
+        <select class="fi" id="sett-from"></select>
+      </div>
+      <div><label class="fl">To (who received)</label>
+        <select class="fi" id="sett-to"></select>
+      </div>
+      <div class="row" style="gap:12px;align-items:flex-start">
+        <div style="flex:1"><label class="fl">Amount *</label><input class="fi" id="sett-amount" type="number" min="0.01" step="0.01" placeholder="0.00" inputmode="decimal"></div>
+        <div style="width:140px"><label class="fl">Date</label><input class="fi" id="sett-date" type="date"></div>
+      </div>
+      <div><label class="fl">Note (optional)</label><input class="fi" id="sett-note" placeholder="Cash transfer, UPI, etc." maxlength="60"></div>
+    </div>
+    <div class="da"><button class="btn btn-x" id="sett-cancel">Cancel</button><button class="btn btn-su" id="sett-save"><span class="mi">check</span>Record</button></div>
+  </div>
+</div>
+
+<!-- SHARE CARD MODAL -->
+<div class="ov" id="share-ov">
+  <div class="share-modal-inner">
+    <div id="share-card-preview"></div>
+    <div class="share-actions">
+      <button class="btn btn-x" id="share-close">Close</button>
+      <button class="btn btn-t" id="share-copy"><span class="mi">content_copy</span>Copy Text</button>
+      <button class="btn btn-t" id="share-save-img"><span class="mi">image</span>Save Image</button>
+      <button class="btn btn-f" id="share-native"><span class="mi">share</span>Share</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIONS SIDE SHEET -->
+<div class="acts-backdrop" id="acts-bd"></div>
+<div class="acts-sheet" id="acts-sheet">
+  <div class="acts-header">
+    <span class="acts-header-title">List Actions</span>
+    <button class="icon-btn" id="acts-close" style="width:40px;height:40px"><span class="mi" style="font-size:20px">close</span></button>
+  </div>
+  <div class="acts-body">
+    <div class="acts-section-label">Export</div>
+    <button class="acts-item" id="pdf-btn">
+      <div class="acts-item-icon"><span class="mi">picture_as_pdf</span></div>
+      <div class="acts-item-body"><div class="acts-item-label">Export PDF</div><div class="acts-item-desc">Full report with settlements</div></div>
+    </button>
+    <button class="acts-item" id="csv-btn">
+      <div class="acts-item-icon"><span class="mi">table_view</span></div>
+      <div class="acts-item-body"><div class="acts-item-label">Export CSV</div><div class="acts-item-desc">Spreadsheet-ready data</div></div>
+    </button>
+    <button class="acts-item" id="backup-btn">
+      <div class="acts-item-icon"><span class="mi">download</span></div>
+      <div class="acts-item-body"><div class="acts-item-label">Backup JSON</div><div class="acts-item-desc">Full data backup</div></div>
+    </button>
+    <div class="acts-divider"></div>
+    <div class="acts-section-label">Share</div>
+    <button class="acts-item" id="share-btn">
+      <div class="acts-item-icon"><span class="mi">share</span></div>
+      <div class="acts-item-body"><div class="acts-item-label">Share Summary Card</div><div class="acts-item-desc">Image + text snapshot</div></div>
+    </button>
+    <div class="acts-divider"></div>
+    <div class="acts-section-label">List</div>
+    <button class="acts-item" id="set-btn">
+      <div class="acts-item-icon"><span class="mi">settings</span></div>
+      <div class="acts-item-body"><div class="acts-item-label">Settings</div><div class="acts-item-desc">Members, currency, theme</div></div>
+    </button>
+  </div>
+</div>
+
+<!-- SETTINGS SHEET -->
+<div class="sb" id="sbd"></div>
+<div class="ss" id="ssheet">
+  <div class="ss-top">
+    <button class="icon-btn" id="ssclose"><span class="mi">close</span></button>
+    <span style="font-size:20px;font-weight:500;color:var(--md-on-surface)">List Settings</span>
+  </div>
+  <div class="ss-sec">
+    <div class="sec-ttl">List Details</div>
+    <div style="margin-bottom:12px"><label class="fl">List Name</label><input class="fi" id="sn" maxlength="60"></div>
+    <div style="margin-bottom:12px"><label class="fl">Currency</label>
+      <select class="fi" id="scur">
+        <option value="INR">🇮🇳 INR (₹)</option><option value="USD">🇺🇸 USD ($)</option>
+        <option value="EUR">🇪🇺 EUR (€)</option><option value="GBP">🇬🇧 GBP (£)</option>
+        <option value="JPY">🇯🇵 JPY (¥)</option><option value="CAD">🇨🇦 CAD (C$)</option>
+        <option value="AUD">🇦🇺 AUD (A$)</option><option value="SGD">🇸🇬 SGD (S$)</option>
+        <option value="CHF">🇨🇭 CHF (Fr)</option><option value="MXN">🇲🇽 MXN ($)</option>
+      </select>
+    </div>
+    <div style="margin-bottom:16px"><label class="fl">Icon &amp; Theme</label><div id="s-ith" class="ith-grid" style="grid-template-columns:repeat(5,1fr)"></div></div>
+    <button class="btn btn-t w100" id="ssave" style="justify-content:center"><span class="mi">save</span>Save Changes</button>
+  </div>
+  <div class="ss-div"></div>
+  <div class="ss-sec">
+    <div class="sec-ttl">Members</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+      <input class="fi" id="smi" placeholder="New member name" maxlength="40" style="margin:0" autocomplete="off" autocapitalize="words">
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <div style="flex:1"><label class="fl" style="margin-bottom:4px">Join Date</label><input class="fi" id="smi-date" type="date"></div>
+        <button class="btn btn-f btn-sm" id="sam" style="flex-shrink:0;margin-bottom:1px"><span class="mi">person_add</span>Add</button>
+      </div>
+    </div>
+    <div id="sml"></div>
+  </div>
+  <div class="ss-div"></div>
+  <div class="ss-sec">
+    <div class="sec-ttl">Data</div>
+    <button class="btn btn-t w100" id="import-json-btn" style="justify-content:center;margin-bottom:8px"><span class="mi">upload</span>Import Backup (JSON)</button>
+    <input type="file" id="import-json-file" accept=".json" style="display:none">
+  </div>
+  <div class="ss-div"></div>
+  <div class="ss-sec" style="padding-bottom:40px">
+    <div class="sec-ttl" style="color:var(--md-error)">Danger Zone</div>
+    <button class="btn btn-et w100" id="sdel" style="justify-content:center"><span class="mi">delete_forever</span>Delete This List</button>
+  </div>
+</div>
+
+<div class="snk" id="snk"><span class="snk-msg" id="snk-msg"></span><button class="snk-undo" id="snk-undo" style="display:none">Undo</button><button class="snk-close" id="snk-close"><span class="mi" style="font-size:18px">close</span></button></div>
+
+<!-- NO MEMBERS DIALOG -->
+<div class="ov" id="nomem-ov">
+  <div class="dlg" style="max-width:380px">
+    <div class="dh"><div class="di" style="background:var(--md-secondary-container);color:var(--md-on-secondary-container)"><span class="mi">group_add</span></div><div class="dt">Add Members First</div></div>
+    <div class="db"><p class="dc">You need at least one member before you can add expenses.</p></div>
+    <div class="da"><button class="btn btn-x" id="nomem-cancel">Cancel</button><button class="btn btn-f" id="nomem-add"><span class="mi">person_add</span>Add Member</button></div>
+  </div>
+</div>
+
+<!-- ADD MEMBER DIALOG -->
+<div class="ov" id="addmem-ov">
+  <div class="dlg" style="max-width:400px">
+    <div class="dh"><div class="di" style="background:var(--md-secondary-container);color:var(--md-on-secondary-container)"><span class="mi">person_add</span></div><div class="dt">Add Member</div></div>
+    <div class="dct" style="padding-top:12px;display:flex;flex-direction:column;gap:16px">
+      <div><label class="fl">Member Name *</label><input class="fi" id="addmem-name" placeholder="e.g. Ravi, Priya…" maxlength="40" autocomplete="off" autocapitalize="words"></div>
+      <div><label class="fl">Join Date</label><input class="fi" id="addmem-date" type="date"></div>
+    </div>
+    <div class="da"><button class="btn btn-x" id="addmem-cancel">Cancel</button><button class="btn btn-f" id="addmem-ok"><span class="mi">check</span>Add</button></div>
+  </div>
+</div>
+
