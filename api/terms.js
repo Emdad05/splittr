@@ -1,13 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const HTML_PATH = path.join(__dirname, '../public/index.html');
+const HTML_PATH = path.join(__dirname, '../public/terms.html');
 module.exports = (req, res) => {
   let html;
   try { html = fs.readFileSync(HTML_PATH, 'utf8'); }
-  catch(e) { res.statusCode = 500; return res.end('<h2>Build error: index.html not found.</h2>'); }
+  catch(e) { res.statusCode = 500; return res.end('<h2>Build error: terms.html not found.</h2>'); }
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
   res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
   res.end(html);
 };

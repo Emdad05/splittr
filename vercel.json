@@ -1,12 +1,15 @@
 {
   "buildCommand": "npm install",
   "rewrites": [
-    { "source": "/",                    "destination": "/api/index"         },
-    { "source": "/app",                 "destination": "/api/app"           },
-    { "source": "/api/auth/url",        "destination": "/api/auth/url"      },
-    { "source": "/api/auth/callback",   "destination": "/api/auth/callback" },
-    { "source": "/api/auth/me",         "destination": "/api/auth/me"       },
-    { "source": "/api/auth/logout",     "destination": "/api/auth/logout"   },
-    { "source": "/api/data",            "destination": "/api/data"          }
+    { "source": "/",                  "destination": "/api/index"         },
+    { "source": "/login",             "destination": "/api/login"         },
+    { "source": "/privacy",           "destination": "/api/privacy"       },
+    { "source": "/terms",             "destination": "/api/terms"         },
+    { "source": "/app",               "destination": "/api/app"           },
+    { "source": "/api/auth/url",      "destination": "/api/auth/url"      },
+    { "source": "/api/auth/callback", "destination": "/api/auth/callback" },
+    { "source": "/api/auth/me",       "destination": "/api/auth/me"       },
+    { "source": "/api/auth/logout",   "destination": "/api/auth/logout"   },
+    { "source": "/api/data",          "destination": "/api/data"          }
   ]
 }

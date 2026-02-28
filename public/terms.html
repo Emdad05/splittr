@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service - Splittr</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg-base:#10131A; --glass-1:rgba(255,255,255,0.06); --glass-2:rgba(255,255,255,0.09); --glass-3:rgba(255,255,255,0.13);
+  --border:rgba(255,255,255,0.09); --border-2:rgba(255,255,255,0.14);
+  --accent:#5B6EF5; --accent-dim:rgba(91,110,245,0.18); --accent-text:#8A97FF;
+  --t1:#F0F2FF; --t2:rgba(240,242,255,0.58); --t3:rgba(240,242,255,0.30);
+  --font:'Plus Jakarta Sans',system-ui,sans-serif; --r:16px; --r-lg:22px; --blur:blur(20px);
+}
+.mi{font-family:'Material Icons Round';font-weight:normal;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-smoothing:antialiased;user-select:none;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg-base);color:var(--t1);font-family:var(--font);min-height:100vh;}
+a{color:var(--accent-text);text-decoration:none;}
+a:hover{text-decoration:underline;}
+.bg-scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.5;}
+.blob-a{width:500px;height:500px;background:rgba(91,110,245,0.10);top:-160px;right:-100px;}
+.blob-b{width:440px;height:440px;background:rgba(91,110,245,0.07);bottom:-130px;left:-80px;}
+nav{position:sticky;top:0;z-index:100;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;background:rgba(16,19,26,0.82);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-bottom:1px solid var(--border);}
+.nav-logo{font-size:18px;font-weight:800;letter-spacing:-0.4px;color:var(--t1);}
+.nav-logo span{color:var(--accent-text);}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;background:var(--glass-2);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--border-2);border-radius:100px;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:background .18s,color .18s;}
+.back-btn:hover{background:var(--glass-3);color:var(--t1);text-decoration:none;}
+.back-btn .mi{font-size:15px;}
+.page{position:relative;z-index:10;max-width:780px;margin:0 auto;padding:56px 40px 100px;}
+.doc-header{margin-bottom:44px;padding-bottom:28px;border-bottom:1px solid var(--border);}
+.doc-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-text);margin-bottom:14px;}
+.doc-eyebrow::before{content:'';width:16px;height:2px;border-radius:2px;background:var(--accent);}
+.doc-title{font-size:clamp(26px,3.5vw,42px);font-weight:800;letter-spacing:-1px;line-height:1.1;color:var(--t1);margin-bottom:12px;}
+.doc-sub{font-size:15px;color:var(--t2);line-height:1.72;}
+.doc-date{display:inline-flex;align-items:center;gap:7px;margin-top:14px;font-size:12px;color:var(--t3);background:var(--glass-2);border:1px solid var(--border);border-radius:100px;padding:5px 14px;}
+.doc-date .mi{font-size:14px;}
+.toc{background:var(--glass-1);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;margin-bottom:44px;}
+.toc-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;}
+.toc-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:5px;}
+.toc-list a{font-size:13.5px;color:var(--t2);display:flex;align-items:center;gap:8px;transition:color .15s;}
+.toc-list a:hover{color:var(--accent-text);text-decoration:none;}
+.toc-list a::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.5;flex-shrink:0;}
+.doc-sec{margin-bottom:40px;}
+.doc-sec h2{font-size:17px;font-weight:700;color:var(--t1);margin-bottom:13px;display:flex;align-items:center;gap:9px;}
+.doc-sec h2 .mi{font-size:19px;color:var(--accent-text);}
+.doc-sec p{font-size:14.5px;color:var(--t2);line-height:1.82;margin-bottom:11px;}
+.doc-sec p:last-child{margin-bottom:0;}
+.doc-sec ul,.doc-sec ol{padding-left:20px;margin-bottom:11px;}
+.doc-sec li{font-size:14.5px;color:var(--t2);line-height:1.82;margin-bottom:5px;}
+.doc-sec strong{color:var(--t1);font-weight:600;}
+.info-box{background:var(--glass-2);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(91,110,245,0.22);border-radius:var(--r);padding:16px 20px;margin:14px 0;}
+.info-box p{margin-bottom:0;}
+.info-box strong{color:var(--accent-text);}
+.warn-box{background:rgba(251,191,36,0.05);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(251,191,36,0.16);border-radius:var(--r);padding:15px 19px;margin:14px 0;}
+.warn-box p{margin-bottom:0;color:var(--t2);}
+.warn-box strong{color:#fbbf24;}
+.divider{height:1px;background:var(--border);margin:32px 0;}
+.doc-footer{margin-top:56px;padding-top:26px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.doc-footer-logo{font-size:16px;font-weight:800;color:var(--t1);}
+.doc-footer-logo span{color:var(--accent-text);}
+.doc-footer-copy{font-size:12px;color:var(--t3);}
+@media(max-width:600px){nav{padding:0 20px;}.page{padding:36px 20px 80px;}.doc-footer{flex-direction:column;text-align:center;}}
+</style>
+</head>
+<body>
+<div class="bg-scene" aria-hidden="true"><div class="blob blob-a"></div><div class="blob blob-b"></div></div>
+
+<nav>
+  <a href="/" class="nav-logo">Split<span>tr</span></a>
+  <a href="/" class="back-btn"><span class="mi">arrow_back</span>Back to home</a>
+</nav>
+
+<main class="page">
+  <header class="doc-header">
+    <div class="doc-eyebrow">Legal</div>
+    <h1 class="doc-title">Terms of Service</h1>
+    <p class="doc-sub">Please read these terms carefully before using Splittr. By accessing or using the service, you agree to be bound by them.</p>
+    <div class="doc-date"><span class="mi">calendar_today</span>Last updated: 1 January 2025</div>
+  </header>
+
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-title">Contents</div>
+    <ol class="toc-list">
+      <li><a href="#acceptance">Acceptance of terms</a></li>
+      <li><a href="#service">The service</a></li>
+      <li><a href="#accounts">Accounts and access</a></li>
+      <li><a href="#acceptable-use">Acceptable use</a></li>
+      <li><a href="#data-ownership">Data ownership</a></li>
+      <li><a href="#google-integration">Google integration</a></li>
+      <li><a href="#availability">Availability and changes</a></li>
+      <li><a href="#disclaimer">Disclaimer of warranties</a></li>
+      <li><a href="#liability">Limitation of liability</a></li>
+      <li><a href="#termination">Termination</a></li>
+      <li><a href="#governing-law">Governing law</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </nav>
+
+  <div id="acceptance" class="doc-sec">
+    <h2><span class="mi">handshake</span>Acceptance of terms</h2>
+    <p>By accessing or using Splittr ("the Service"), you agree to these Terms of Service. If you do not agree, you must not use the Service.</p>
+    <p>These terms apply to all visitors, users, and guests of the Service, whether authenticated via Google or using guest mode.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="service" class="doc-sec">
+    <h2><span class="mi">apps</span>The service</h2>
+    <p>Splittr is a free web application for tracking and splitting shared expenses. Key characteristics:</p>
+    <ul>
+      <li>The Service is provided free of charge with no subscription fees.</li>
+      <li>Expense data is stored in your own Google Drive app folder (when signed in) or in your browser's localStorage (guest mode).</li>
+      <li>We do not charge for use of the core features and do not display advertisements.</li>
+      <li>We reserve the right to introduce optional paid features in the future, which would always be clearly identified.</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="accounts" class="doc-sec">
+    <h2><span class="mi">account_circle</span>Accounts and access</h2>
+    <p>You may use Splittr in two ways:</p>
+    <ul>
+      <li><strong>Google Sign-In</strong> - Authenticate using your Google account. You are responsible for the security of your Google credentials. Splittr only requests the <code>drive.appdata</code> scope, limiting access to Splittr's own app folder.</li>
+      <li><strong>Guest mode</strong> - Use the app without authentication. Data is stored locally in your browser. You acknowledge that this data may be lost if you clear browser storage or switch devices, and that no backup is active unless you manually export.</li>
+    </ul>
+    <p>You must be at least 13 years old to use the Service. By using it, you confirm you meet this requirement.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="acceptable-use" class="doc-sec">
+    <h2><span class="mi">rule</span>Acceptable use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Use the Service for any unlawful purpose or in violation of applicable law.</li>
+      <li>Attempt to gain unauthorised access to any part of the Service or its infrastructure.</li>
+      <li>Reverse engineer, decompile, or attempt to extract source code from the Service.</li>
+      <li>Use the Service to store or transmit material that is defamatory, obscene, or infringes third-party intellectual property rights.</li>
+      <li>Interfere with or disrupt the integrity or performance of the Service.</li>
+      <li>Use automated tools to scrape or stress-test the Service.</li>
+    </ul>
+    <div class="warn-box"><p><strong>Violations may result in immediate termination</strong> of your access to the Service without notice.</p></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="data-ownership" class="doc-sec">
+    <h2><span class="mi">folder_open</span>Data ownership</h2>
+    <p>You retain full ownership of all expense data you create within Splittr.</p>
+    <div class="info-box"><p><strong>Your data belongs to you.</strong> Splittr does not claim any ownership over expense groups, amounts, member names, or any content you enter. We act only as a conduit to store that data in your own Google Drive.</p></div>
+    <p>By using the Service you grant Splittr a limited, revocable licence to read and write your data solely for the purpose of providing the Service. This licence is revoked when you remove the app's access from your Google account.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="google-integration" class="doc-sec">
+    <h2><span class="mi">cloud_sync</span>Google integration</h2>
+    <p>Splittr's sign-in and storage features depend on Google OAuth 2.0 and the Drive API. By using these features you also agree to <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Google's Terms of Service</a>.</p>
+    <p>We are not affiliated with, sponsored by, or endorsed by Google LLC. Google Drive, Google OAuth, and related marks are trademarks of Google LLC.</p>
+    <p>We are not liable for any unavailability, data loss, or changes in Google's APIs or policies that affect the Service's functionality.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="availability" class="doc-sec">
+    <h2><span class="mi">update</span>Availability and changes</h2>
+    <p>We aim to keep the Service available but cannot guarantee uninterrupted access. We reserve the right to:</p>
+    <ul>
+      <li>Modify, suspend, or discontinue the Service at any time with or without notice.</li>
+      <li>Update these Terms of Service. The current version will always be available at this URL. Continued use after changes constitutes acceptance.</li>
+      <li>Perform maintenance that may cause temporary downtime.</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="disclaimer" class="doc-sec">
+    <h2><span class="mi">warning_amber</span>Disclaimer of warranties</h2>
+    <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
+    <p>Financial calculations provided by the app are for informational purposes only. You should independently verify any figures before settling debts.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="liability" class="doc-sec">
+    <h2><span class="mi">balance</span>Limitation of liability</h2>
+    <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, SPLITTR AND ITS OPERATORS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:</p>
+    <ul>
+      <li>Loss of data due to browser storage clearance, revocation of Google Drive access, or service discontinuation.</li>
+      <li>Financial disputes arising from calculations made by the app.</li>
+      <li>Any interruption or unavailability of the Service.</li>
+    </ul>
+    <p>Our total liability to you for any claim shall not exceed &#163;100 (one hundred pounds sterling) or the equivalent in your local currency.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="termination" class="doc-sec">
+    <h2><span class="mi">logout</span>Termination</h2>
+    <p>You may stop using the Service at any time. To delete your data, revoke Splittr's Google Drive access in your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account settings</a>.</p>
+    <p>We may suspend or terminate your access at any time if we believe you are in violation of these Terms. Provisions that by their nature should survive termination, including disclaimers and limitations of liability, will do so.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="governing-law" class="doc-sec">
+    <h2><span class="mi">gavel</span>Governing law</h2>
+    <p>These Terms shall be governed by and construed in accordance with the laws of England and Wales. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="contact" class="doc-sec">
+    <h2><span class="mi">mail</span>Contact</h2>
+    <p>For questions about these Terms, please open an issue on the project repository or contact us through the app's support channel. We aim to respond within 5 business days.</p>
+  </div>
+
+  <footer class="doc-footer">
+    <a href="/" class="doc-footer-logo">Split<span>tr</span></a>
+    <a href="/privacy" style="font-size:13px;color:var(--t3);" onmouseover="this.style.color='var(--accent-text)'" onmouseout="this.style.color='var(--t3)'">&#8592; Privacy Policy</a>
+    <span class="doc-footer-copy">&#169; 2025 Splittr</span>
+  </footer>
+</main>
+</body>
+</html>
