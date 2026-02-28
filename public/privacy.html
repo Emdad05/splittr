@@ -11,82 +11,81 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg-base:#10131A; --glass-1:rgba(255,255,255,0.06); --glass-2:rgba(255,255,255,0.09); --glass-3:rgba(255,255,255,0.13);
-  --border:rgba(255,255,255,0.09); --border-2:rgba(255,255,255,0.14);
-  --accent:#5B6EF5; --accent-dim:rgba(91,110,245,0.18); --accent-text:#8A97FF;
-  --t1:#F0F2FF; --t2:rgba(240,242,255,0.58); --t3:rgba(240,242,255,0.30);
-  --font:'Plus Jakarta Sans',system-ui,sans-serif; --r:16px; --r-lg:22px; --blur:blur(20px);
+  --bg:#10131A; --bg2:#161B26;
+  --accent:#5B6EF5; --at:#8A97FF;
+  --border:rgba(255,255,255,0.09);
+  --t1:#F0F2FF; --t2:rgba(240,242,255,0.60); --t3:rgba(240,242,255,0.32);
+  --font:'Plus Jakarta Sans',system-ui,sans-serif;
 }
 .mi{font-family:'Material Icons Round';font-weight:normal;font-style:normal;font-size:20px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-smoothing:antialiased;user-select:none;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg-base);color:var(--t1);font-family:var(--font);min-height:100vh;}
-a{color:var(--accent-text);text-decoration:none;}
+body{background:var(--bg);color:var(--t1);font-family:var(--font);min-height:100vh;}
+a{color:var(--at);text-decoration:none;}
 a:hover{text-decoration:underline;}
-.bg-scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-.blob{position:absolute;border-radius:50%;filter:blur(100px);opacity:.5;}
-.blob-a{width:500px;height:500px;background:rgba(91,110,245,0.10);top:-160px;right:-100px;}
-.blob-b{width:440px;height:440px;background:rgba(91,110,245,0.07);bottom:-130px;left:-80px;}
-nav{position:sticky;top:0;z-index:100;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;background:rgba(16,19,26,0.82);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border-bottom:1px solid var(--border);}
+.topnav{position:sticky;top:0;z-index:100;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#10131A;border-bottom:1px solid var(--border);}
 .nav-logo{font-size:18px;font-weight:800;letter-spacing:-0.4px;color:var(--t1);}
-.nav-logo span{color:var(--accent-text);}
-.back-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;background:var(--glass-2);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--border-2);border-radius:100px;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:background .18s,color .18s;}
-.back-btn:hover{background:var(--glass-3);color:var(--t1);text-decoration:none;}
+.nav-logo span{color:var(--at);}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1e2438;border:1px solid rgba(255,255,255,0.12);border-radius:100px;font-size:13px;font-weight:600;color:var(--t2);font-family:var(--font);cursor:pointer;text-decoration:none;transition:background .15s,color .15s;}
+.back-btn:hover{background:#252d45;color:var(--t1);text-decoration:none;}
 .back-btn .mi{font-size:15px;}
-.page{position:relative;z-index:10;max-width:780px;margin:0 auto;padding:56px 40px 100px;}
-.doc-header{margin-bottom:44px;padding-bottom:28px;border-bottom:1px solid var(--border);}
-.doc-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-text);margin-bottom:14px;}
-.doc-eyebrow::before{content:'';width:16px;height:2px;border-radius:2px;background:var(--accent);}
-.doc-title{font-size:clamp(26px,3.5vw,42px);font-weight:800;letter-spacing:-1px;line-height:1.1;color:var(--t1);margin-bottom:12px;}
-.doc-sub{font-size:15px;color:var(--t2);line-height:1.72;}
-.doc-date{display:inline-flex;align-items:center;gap:7px;margin-top:14px;font-size:12px;color:var(--t3);background:var(--glass-2);border:1px solid var(--border);border-radius:100px;padding:5px 14px;}
+.page{max-width:760px;margin:0 auto;padding:52px 32px 100px;}
+.doc-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--at);margin-bottom:14px;}
+.doc-eyebrow::before{content:'';width:14px;height:2px;border-radius:2px;background:var(--accent);}
+h1{font-size:clamp(26px,5vw,40px);font-weight:800;letter-spacing:-1px;line-height:1.1;color:var(--t1);margin-bottom:12px;}
+.doc-sub{font-size:15px;color:var(--t2);line-height:1.75;max-width:600px;}
+.doc-date{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:12px;color:var(--t3);background:#1a1f2e;border:1px solid var(--border);border-radius:100px;padding:5px 13px;}
 .doc-date .mi{font-size:14px;}
-.toc{background:var(--glass-1);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 24px;margin-bottom:44px;}
-.toc-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:12px;}
-.toc-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:5px;}
-.toc-list a{font-size:13.5px;color:var(--t2);display:flex;align-items:center;gap:8px;transition:color .15s;}
-.toc-list a:hover{color:var(--accent-text);text-decoration:none;}
-.toc-list a::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.5;flex-shrink:0;}
+.hd-rule{height:1px;background:var(--border);margin:36px 0 40px;}
+.toc-box{background:#161b28;border:1px solid rgba(255,255,255,0.10);border-radius:18px;padding:22px 26px;margin-bottom:44px;}
+.toc-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:14px;display:block;}
+.toc-items{list-style:none;padding:0;margin:0;}
+.toc-items li{padding:0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.toc-items li:last-child{border-bottom:none;}
+.toc-items li a{display:block;font-size:13.5px;color:var(--t2);padding:8px 0 8px 18px;position:relative;transition:color .14s;}
+.toc-items li a::before{content:'';position:absolute;left:2px;top:50%;transform:translateY(-50%);width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.5;}
+.toc-items li a:hover{color:var(--at);text-decoration:none;}
 .doc-sec{margin-bottom:40px;}
-.doc-sec h2{font-size:17px;font-weight:700;color:var(--t1);margin-bottom:13px;display:flex;align-items:center;gap:9px;}
-.doc-sec h2 .mi{font-size:19px;color:var(--accent-text);}
-.doc-sec p{font-size:14.5px;color:var(--t2);line-height:1.82;margin-bottom:11px;}
+.doc-sec h2{font-size:17px;font-weight:700;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.doc-sec h2 .mi{font-size:19px;color:var(--at);}
+.doc-sec p{font-size:14.5px;color:var(--t2);line-height:1.82;margin-bottom:10px;}
 .doc-sec p:last-child{margin-bottom:0;}
-.doc-sec ul,.doc-sec ol{padding-left:20px;margin-bottom:11px;}
-.doc-sec li{font-size:14.5px;color:var(--t2);line-height:1.82;margin-bottom:5px;}
+.doc-sec ul,.doc-sec ol{padding-left:20px;margin-bottom:10px;}
+.doc-sec li{font-size:14.5px;color:var(--t2);line-height:1.80;margin-bottom:5px;}
 .doc-sec strong{color:var(--t1);font-weight:600;}
-.info-box{background:var(--glass-2);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(91,110,245,0.22);border-radius:var(--r);padding:16px 20px;margin:14px 0;}
-.info-box p{margin-bottom:0;}
-.info-box strong{color:var(--accent-text);}
-.warn-box{background:rgba(251,191,36,0.05);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid rgba(251,191,36,0.16);border-radius:var(--r);padding:15px 19px;margin:14px 0;}
+.doc-sec code{font-size:12.5px;background:#1e2438;border-radius:5px;padding:1px 6px;color:var(--at);}
+.info-box{background:#1a2040;border:1px solid rgba(91,110,245,0.25);border-radius:14px;padding:15px 18px;margin:14px 0;}
+.info-box p{margin-bottom:0;color:var(--t2);}
+.info-box strong{color:var(--at);}
+.warn-box{background:#1f1a0f;border:1px solid rgba(251,191,36,0.20);border-radius:14px;padding:14px 18px;margin:14px 0;}
 .warn-box p{margin-bottom:0;color:var(--t2);}
 .warn-box strong{color:#fbbf24;}
-.divider{height:1px;background:var(--border);margin:32px 0;}
-.doc-footer{margin-top:56px;padding-top:26px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.doc-footer-logo{font-size:16px;font-weight:800;color:var(--t1);}
-.doc-footer-logo span{color:var(--accent-text);}
-.doc-footer-copy{font-size:12px;color:var(--t3);}
-@media(max-width:600px){nav{padding:0 20px;}.page{padding:36px 20px 80px;}.doc-footer{flex-direction:column;text-align:center;}}
+.rule{height:1px;background:var(--border);margin:32px 0;}
+.doc-foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.foot-logo{font-size:16px;font-weight:800;color:var(--t1);}
+.foot-logo span{color:var(--at);}
+.foot-copy{font-size:12px;color:var(--t3);}
+.foot-link{font-size:13px;color:var(--t3);transition:color .14s;}
+.foot-link:hover{color:var(--at);text-decoration:none;}
+@media(max-width:600px){.topnav{padding:0 16px;}.page{padding:32px 16px 80px;}.toc-box{padding:16px;}.doc-foot{flex-direction:column;text-align:center;}}
 </style>
 </head>
 <body>
-<div class="bg-scene" aria-hidden="true"><div class="blob blob-a"></div><div class="blob blob-b"></div></div>
 
-<nav>
+<div class="topnav">
   <a href="/" class="nav-logo">Split<span>tr</span></a>
   <a href="/" class="back-btn"><span class="mi">arrow_back</span>Back to home</a>
-</nav>
+</div>
 
-<main class="page">
-  <header class="doc-header">
-    <div class="doc-eyebrow">Legal</div>
-    <h1 class="doc-title">Privacy Policy</h1>
-    <p class="doc-sub">The short version: we store almost nothing on our servers. Your expense data lives in your own Google Drive.</p>
-    <div class="doc-date"><span class="mi">calendar_today</span>Last updated: 1 January 2025</div>
-  </header>
+<div class="page">
+  <div class="doc-eyebrow">Legal</div>
+  <h1>Privacy Policy</h1>
+  <p class="doc-sub">The short version: we store almost nothing on our servers. Your expense data lives in your own Google Drive.</p>
+  <div class="doc-date"><span class="mi">calendar_today</span>Last updated: 1 January 2025</div>
+  <div class="hd-rule"></div>
 
-  <nav class="toc" aria-label="Table of contents">
-    <div class="toc-title">Contents</div>
-    <ol class="toc-list">
+  <div class="toc-box">
+    <span class="toc-label">Contents</span>
+    <ul class="toc-items">
       <li><a href="#overview">Overview</a></li>
       <li><a href="#data-collected">Data we collect</a></li>
       <li><a href="#data-use">How we use your data</a></li>
@@ -98,134 +97,116 @@ nav{position:sticky;top:0;z-index:100;height:60px;display:flex;align-items:cente
       <li><a href="#children">Children</a></li>
       <li><a href="#changes">Changes to this policy</a></li>
       <li><a href="#contact">Contact</a></li>
-    </ol>
-  </nav>
+    </ul>
+  </div>
 
   <div id="overview" class="doc-sec">
     <h2><span class="mi">info</span>Overview</h2>
     <div class="info-box"><p><strong>Privacy-first design:</strong> Splittr is built so your expense data never touches our servers. When you sign in with Google, your groups and expenses are stored directly in your own Google Drive. We only hold a temporary session token to keep you logged in.</p></div>
-    <p>Splittr provides an expense-splitting service accessible at this domain. This Privacy Policy describes what information we collect, how we use it, and the choices you have.</p>
-    <p>By using Splittr you agree to the practices described here. If you do not agree, please discontinue use of the service.</p>
+    <p>This Privacy Policy describes what information we collect, how we use it, and the choices you have. By using Splittr you agree to the practices described here.</p>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="data-collected" class="doc-sec">
     <h2><span class="mi">data_usage</span>Data we collect</h2>
     <p>We collect the minimum information necessary to operate the service:</p>
     <ul>
-      <li><strong>Google profile information</strong> - When you sign in via Google OAuth, we receive your name, email address and profile picture URL. This is used only to display your identity within the app.</li>
-      <li><strong>Google Drive access token</strong> - A scoped OAuth token that allows Splittr to read and write to a private app folder in your Google Drive. This token is stored server-side only as part of your encrypted session and is never logged or shared.</li>
-      <li><strong>Session data</strong> - An encrypted session cookie to keep you authenticated between visits. It contains no expense data.</li>
-      <li><strong>Server logs</strong> - Standard HTTP request logs (IP address, browser type, pages visited, timestamps) retained for up to 30 days for security and debugging.</li>
+      <li><strong>Google profile information</strong> — Your name, email address and profile picture URL, used only to display your identity within the app.</li>
+      <li><strong>Google Drive access token</strong> — A scoped OAuth token stored server-side in your encrypted session. Never logged or shared.</li>
+      <li><strong>Session data</strong> — An encrypted cookie to keep you authenticated. Contains no expense data.</li>
+      <li><strong>Server logs</strong> — Standard HTTP logs (IP, browser type, pages visited, timestamps) retained up to 30 days.</li>
     </ul>
-    <p><strong>We do not collect:</strong> payment card details, national ID, location data or any expense content such as amounts, descriptions or member names. All expense data is stored in your own Google Drive.</p>
+    <p><strong>We do not collect:</strong> payment details, location data, or any expense content such as amounts, descriptions or member names.</p>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="data-use" class="doc-sec">
     <h2><span class="mi">manage_accounts</span>How we use your data</h2>
-    <p>Your data is used solely to operate the service:</p>
-    <ul>
-      <li>Authenticate you via Google OAuth and maintain your login session.</li>
-      <li>Display your name and avatar in the app interface.</li>
-      <li>Read and write expense data to your own Google Drive app folder on your behalf.</li>
-      <li>Diagnose errors and maintain service reliability using anonymised log data.</li>
-    </ul>
+    <p>Your data is used solely to operate the service: authenticate you, display your name and avatar, read and write your Drive data on your behalf, and diagnose errors using anonymised logs.</p>
     <p>We do not use your data for advertising, profiling or any commercial purpose beyond operating Splittr.</p>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="drive-storage" class="doc-sec">
     <h2><span class="mi">cloud_sync</span>Google Drive storage</h2>
     <p>When you sign in, Splittr requests permission to access a dedicated <strong>app folder</strong> in your Google Drive. This folder:</p>
     <ul>
-      <li>Is hidden from your regular Drive file list; it does not appear in "My Drive".</li>
-      <li>Is accessible only to Splittr and you. No other app or Google service can see it.</li>
-      <li>Can be deleted at any time by revoking Splittr's access in your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account permissions</a>, which deletes all stored data.</li>
+      <li>Is hidden from your regular Drive file list — it does not appear in "My Drive".</li>
+      <li>Is accessible only to Splittr and you.</li>
+      <li>Can be deleted by revoking Splittr's access in your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account permissions</a>.</li>
     </ul>
-    <div class="info-box"><p><strong>Your data, your Drive.</strong> Splittr's servers are only a relay: we read and write on your behalf but never retain expense data server-side. If you delete your Google account or revoke our access, your expense data is gone.</p></div>
-    <p>If you use Splittr as a guest (without signing in), all data is stored locally in your browser's localStorage only. This data is not synced and will be lost if you clear your browser storage.</p>
+    <div class="info-box"><p><strong>Your data, your Drive.</strong> Splittr's servers are only a relay — we never retain expense data server-side. If you delete your Google account or revoke access, your expense data is gone.</p></div>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="cookies" class="doc-sec">
     <h2><span class="mi">cookie</span>Cookies and sessions</h2>
-    <p>We use the following cookies:</p>
+    <p>We use two cookies:</p>
     <ul>
-      <li><strong>splittr_has_session</strong> - A session indicator set when you sign in. Expires when you sign out or after 30 days.</li>
-      <li><strong>splittr_guest</strong> - Set when you choose guest mode. Contains no personal data. Expires after 30 days.</li>
+      <li><strong>splittr_has_session</strong> — A session indicator set when you sign in. Expires on sign-out or after 30 days.</li>
+      <li><strong>splittr_guest</strong> — Set when you choose guest mode. Contains no personal data. Expires after 30 days.</li>
     </ul>
-    <p>We do not use advertising cookies, analytics cookies or any third-party tracking cookies.</p>
+    <p>We do not use advertising, analytics or third-party tracking cookies.</p>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="third-parties" class="doc-sec">
     <h2><span class="mi">share</span>Third parties</h2>
-    <p>We use the following third-party services:</p>
     <ul>
-      <li><strong>Google OAuth 2.0 and Google Drive API</strong> - For sign-in and Drive storage. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
-      <li><strong>Vercel</strong> - Our hosting provider. Subject to <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel's Privacy Policy</a>. Server logs may be stored by Vercel.</li>
-      <li><strong>Google Fonts</strong> - For typography. Font files are loaded from Google's CDN.</li>
+      <li><strong>Google OAuth 2.0 and Drive API</strong> — For sign-in and storage. Subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</li>
+      <li><strong>Vercel</strong> — Our hosting provider. Subject to <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel's Privacy Policy</a>.</li>
+      <li><strong>Google Fonts</strong> — For typography, loaded from Google's CDN.</li>
     </ul>
     <p>We do not sell, rent or share your personal information with any other third parties.</p>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="data-deletion" class="doc-sec">
     <h2><span class="mi">delete_forever</span>Your rights and deletion</h2>
     <ul>
-      <li><strong>Access</strong> - You can view all your expense data directly in your Google Drive app folder at any time.</li>
-      <li><strong>Deletion</strong> - Revoke Splittr's access in <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account settings</a> to immediately delete all app folder data. Alternatively, contact us and we will confirm deletion of any server-held session data within 30 days.</li>
-      <li><strong>Export</strong> - Use the "Backup JSON" or "Export PDF/CSV" features within any group to download your data at any time.</li>
-      <li><strong>Portability</strong> - Your data is stored as JSON files in your own Drive, giving you full control and portability.</li>
+      <li><strong>Access</strong> — View all your data directly in your Google Drive app folder at any time.</li>
+      <li><strong>Deletion</strong> — Revoke Splittr's access in <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account settings</a> to immediately delete all app folder data.</li>
+      <li><strong>Export</strong> — Use "Backup JSON" or "Export PDF/CSV" within any group to download your data.</li>
+      <li><strong>Portability</strong> — Your data is stored as JSON in your own Drive, giving you full control.</li>
     </ul>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="security" class="doc-sec">
     <h2><span class="mi">security</span>Security</h2>
     <ul>
       <li>All traffic is encrypted in transit via HTTPS/TLS.</li>
       <li>Session tokens are encrypted and never stored in plain text.</li>
-      <li>OAuth tokens are scoped to the minimum required permissions (Drive app folder only, <code>drive.appdata</code> scope).</li>
+      <li>OAuth tokens are scoped to minimum required permissions (<code>drive.appdata</code> only).</li>
       <li>We do not log expense content or OAuth access tokens.</li>
     </ul>
-    <div class="warn-box"><p><strong>No system is 100% secure.</strong> While we implement reasonable safeguards, we cannot guarantee absolute security. If you discover a vulnerability, please report it responsibly via the contact address below.</p></div>
+    <div class="warn-box"><p><strong>No system is 100% secure.</strong> While we implement reasonable safeguards, we cannot guarantee absolute security. Please report vulnerabilities responsibly.</p></div>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="children" class="doc-sec">
     <h2><span class="mi">child_care</span>Children</h2>
     <p>Splittr is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal information, please contact us and we will delete it promptly.</p>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="changes" class="doc-sec">
     <h2><span class="mi">update</span>Changes to this policy</h2>
-    <p>We may update this Privacy Policy from time to time. When we do, we will update the "Last updated" date at the top of this page. Continued use of Splittr after changes constitutes acceptance of the updated policy.</p>
+    <p>We may update this Privacy Policy from time to time. When we do, we will update the "Last updated" date above. Continued use of Splittr after changes constitutes acceptance of the updated policy.</p>
   </div>
-
-  <div class="divider"></div>
+  <div class="rule"></div>
 
   <div id="contact" class="doc-sec">
     <h2><span class="mi">mail</span>Contact</h2>
     <p>For privacy questions, data deletion requests or to report a security issue, please open an issue on the project repository or reach out through the app's support channel. We aim to respond within 5 business days.</p>
   </div>
 
-  <footer class="doc-footer">
-    <a href="/" class="doc-footer-logo">Split<span>tr</span></a>
-    <a href="/terms" style="font-size:13px;color:var(--t3);" onmouseover="this.style.color='var(--accent-text)'" onmouseout="this.style.color='var(--t3)'">Terms of Service &#8594;</a>
-    <span class="doc-footer-copy">&#169; 2025 Splittr</span>
+  <footer class="doc-foot">
+    <a href="/" class="foot-logo">Split<span>tr</span></a>
+    <a href="/terms" class="foot-link">Terms of Service</a>
+    <span class="foot-copy">&#169; 2025 Splittr</span>
   </footer>
-</main>
+</div>
+
 </body>
 </html>

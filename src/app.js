@@ -169,15 +169,29 @@ async function _initFromServer(){
     localStorage.setItem('splittr_user',JSON.stringify(_currentUser));
     const res=await fetch('/api/data',{credentials:'include'});
     const data=await res.json();
-    if(data.groups&&data.groups.length){
-      S.groups=_migrateGroups(data.groups);
-      localStorage.setItem('split-v4',JSON.stringify(S.groups));
-    } else {
+
+    /* Always grab any locally stored data (from guest usage) */
+    let localGroups=[];
+    try{
       const local=localStorage.getItem('split-v4');
-      if(local) try{S.groups=_migrateGroups(JSON.parse(local));}catch(e){}
+      if(local) localGroups=_migrateGroups(JSON.parse(local));
+    }catch(e){}
+
+    if(data.groups&&data.groups.length){
+      /* Merge local groups into Drive groups — add any local group whose id
+         doesn't already exist in Drive so guest data is never lost */
+      const driveIds=new Set(data.groups.map(g=>g.id));
+      const merged=[...data.groups, ...localGroups.filter(g=>!driveIds.has(g.id))];
+      S.groups=_migrateGroups(merged);
+      localStorage.setItem('split-v4',JSON.stringify(S.groups));
+      if(merged.length!==data.groups.length) await _apiSave(true); // upload merged data
+    } else {
+      /* Drive has nothing — upload whatever local data exists */
+      S.groups=localGroups;
       if(S.groups.length) await _apiSave(true);
     }
     _guestMode=false; localStorage.removeItem('splittr_guest');
+    document.cookie='splittr_guest=; Max-Age=0; path=/; SameSite=Lax';
     const gw=Q('guest-warning'); if(gw) gw.classList.remove('show');
     _renderUserChip(); renderHome(); showFab('home');
     Q('app').classList.add('unlocked');
@@ -190,24 +204,40 @@ async function _driveSync(){
   if(_guestMode) return;
   try{
     const res=await fetch('/api/data',{credentials:'include'});
-    if(!res.ok) return;
+    if(!res.ok){
+      /* Session expired — redirect to home so user can re-authenticate */
+      if(res.status===401){
+        localStorage.removeItem('splittr_user');
+        window.location.href='/';
+      }
+      return;
+    }
     const data=await res.json();
     if(data.groups&&data.groups.length){
       S.groups=_migrateGroups(data.groups);
       localStorage.setItem('split-v4',JSON.stringify(S.groups));
       renderHome();
+    } else {
+      /* Drive is empty but we have local data — upload it */
+      const local=localStorage.getItem('split-v4');
+      if(local) try{
+        const localGroups=_migrateGroups(JSON.parse(local));
+        if(localGroups.length){ S.groups=localGroups; await _apiSave(true); renderHome(); }
+      }catch(e){}
     }
     try{_renderUserChip();}catch(e){}
   }catch(e){}
 }
 
-/* ── Guest mode ── */
+/* ── Guest mode (kept for backward compatibility, no longer accessible from UI) ── */
 const _guestOv=()=>Q('guest-confirm-ov');
 const _guestBtn=Q('guest-btn');
-if(_guestBtn) _guestBtn.onclick=()=>_guestOv().classList.add('open');
-Q('guest-confirm-ok').onclick=()=>{ _guestOv().classList.remove('open'); localStorage.setItem('splittr_guest','1'); _enterGuestMode(); };
-Q('guest-confirm-cancel').onclick=()=>_guestOv().classList.remove('open');
-_guestOv().addEventListener('click',e=>{ if(e.target===_guestOv()) _guestOv().classList.remove('open'); });
+if(_guestBtn) _guestBtn.onclick=()=>_guestOv()&&_guestOv().classList.add('open');
+const _guestConfirmOk=Q('guest-confirm-ok');
+if(_guestConfirmOk) _guestConfirmOk.onclick=()=>{ _guestOv()&&_guestOv().classList.remove('open'); localStorage.setItem('splittr_guest','1'); _enterGuestMode(); };
+const _guestConfirmCancel=Q('guest-confirm-cancel');
+if(_guestConfirmCancel) _guestConfirmCancel.onclick=()=>_guestOv()&&_guestOv().classList.remove('open');
+if(_guestOv()) _guestOv().addEventListener('click',e=>{ if(e.target===_guestOv()) _guestOv().classList.remove('open'); });
 
 function _enterGuestMode(){
   _guestMode=true; load(); renderHome(); showFab('home');
@@ -216,22 +246,30 @@ function _enterGuestMode(){
   const ao=Q('auth-overlay'); if(ao) ao.classList.add('hidden');
   document.documentElement.classList.add('splittr-authed');
   const gw=Q('guest-warning'); if(gw) gw.classList.add('show');
-  // Make sure sync indicator is never stuck spinning in guest mode
   setSyncDone();
 }
 
-Q('guest-warning-signin').onclick=()=>{ localStorage.removeItem('splittr_guest'); window.location.href='/api/auth/url'; };
+Q('guest-warning-signin').onclick=()=>{
+  /* Do NOT remove split-v4 here — _initFromServer will merge it with Drive data */
+  localStorage.removeItem('splittr_guest');
+  document.cookie='splittr_guest=; Max-Age=0; path=/; SameSite=Lax';
+  window.location.href='/api/auth/url';
+};
 
 /* ── Sign out ── */
 async function _doSignOut(){
   try{ await fetch('/api/auth/logout',{method:'POST',credentials:'include'}); }catch(e){}
-  localStorage.removeItem('splittr_user'); localStorage.removeItem('splittr_guest');
-  // Clear guest cookie too
+  /* Clear ALL local storage so no stale data persists after sign-out */
+  localStorage.removeItem('splittr_user');
+  localStorage.removeItem('splittr_guest');
+  localStorage.removeItem('split-v4');
+  /* Clear all cookies */
   document.cookie = 'splittr_guest=; Max-Age=0; path=/; SameSite=Lax';
+  document.cookie = 'splittr_has_session=; Max-Age=0; path=/; SameSite=Lax';
+  document.cookie = 'splittr_sess=; Max-Age=0; path=/; SameSite=Lax';
+  /* Reset in-memory state */
   _currentUser=null; _guestMode=false; S={groups:[],activeId:null};
-  Q('user-chip').style.display='none';
-  Q('app').classList.remove('unlocked');
-  document.documentElement.classList.remove('splittr-authed');
+  /* Redirect home — full page reload ensures clean slate */
   window.location.href='/';
 }
 Q('signout-confirm-ok').onclick=()=>{ Q('signout-confirm-ov').classList.remove('open'); _doSignOut(); };

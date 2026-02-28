@@ -507,22 +507,16 @@ html.dark .cv{background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.1)}
 }
 .btn-google .g-logo img{width:14px;height:14px;display:block}
 
-/* "or" divider */
-.auth-or{display:flex;align-items:center;gap:12px}
-.auth-or::before,.auth-or::after{content:'';flex:1;height:1px;background:var(--md-outline-variant)}
-.auth-or span{font-size:11px;color:var(--md-outline);letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
-
-/* Guest button — low-prominence text link */
-.btn-guest{
-  height:38px;padding:0;border:none;background:transparent;
-  cursor:pointer;font-family:var(--font);font-size:13px;font-weight:400;
-  color:var(--md-outline);transition:color .15s;width:100%;letter-spacing:.1px;
+/* Terms agreement box */
+.auth-terms-box{
+  margin-top:18px;padding:13px 16px;
+  background:var(--md-surface-variant);
+  border:1px solid var(--md-outline-variant);
+  border-radius:12px;
 }
-.btn-guest:hover{color:var(--md-on-surface-variant)}
-
-/* Privacy note */
-.auth-privacy{font-size:11px;color:var(--md-outline);text-align:center;line-height:1.65}
-.auth-privacy b{color:var(--md-on-surface-variant);font-weight:500}
+.auth-terms-box p{font-size:11px;color:var(--md-on-surface-variant);line-height:1.75;text-align:center}
+.auth-terms-box a{color:var(--md-primary);text-decoration:underline;text-underline-offset:2px}
+.auth-terms-box b{color:var(--md-on-surface);font-weight:500}
 
 /* Loading state */
 .auth-loading{display:none;flex-direction:column;align-items:center;gap:12px;padding:4px 0}

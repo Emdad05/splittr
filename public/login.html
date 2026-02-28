@@ -239,7 +239,7 @@ body{min-height:100vh;font-family:var(--font);display:flex;flex-direction:column
 (function(){
   if (new URLSearchParams(location.search).get('auth') === 'error'){
     document.getElementById('err-banner').classList.add('show');
-    history.replaceState({}, '', '/login');
+    history.replaceState({}, '', '/');
   }
 })();
 
