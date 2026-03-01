@@ -1,89 +1,83 @@
-#!/usr/bin/env node
-// build.js — assemble, minify, and obfuscate app.html from src/ files
+// build.js — minify HTML + obfuscate inline JS (lean, no size bloat)
 const fs   = require('fs');
 const path = require('path');
+const { minify } = require('html-minifier-terser');
 const JavaScriptObfuscator = require('javascript-obfuscator');
 
-const src  = path.join(__dirname,'src');
-const out  = path.join(__dirname,'public');
-fs.mkdirSync(out,{recursive:true});
+const PUBLIC = path.join(__dirname, 'public');
+const files  = ['index.html', 'login.html', 'app.html', 'privacy.html', 'terms.html'];
 
-const css  = fs.readFileSync(path.join(src,'app.css'),'utf8');
-const js   = fs.readFileSync(path.join(src,'app.js'),'utf8');
-const body = fs.readFileSync(path.join(src,'body.html'),'utf8');
+// Lean obfuscation — makes code unreadable without bloating file size
+const OBFUSCATE_OPTS = {
+  compact: true,
+  controlFlowFlattening: false,    // skip — major bloat
+  deadCodeInjection: false,        // skip — bloat
+  debugProtection: true,           // breaks DevTools debugger
+  debugProtectionInterval: 4000,
+  disableConsoleOutput: true,      // console.log → noop
+  identifierNamesGenerator: 'hexadecimal',  // vars become _0x1a2b etc
+  renameGlobals: false,
+  rotateStringArray: true,
+  selfDefending: false,
+  shuffleStringArray: true,
+  splitStrings: false,             // skip — bloat
+  stringArray: true,               // moves all strings to encoded array
+  stringArrayCallsTransform: false,
+  stringArrayEncoding: ['none'],   // no base64 wrapping = no bloat
+  stringArrayIndexShift: true,
+  stringArrayRotate: true,
+  stringArrayShuffle: true,
+  stringArrayWrappersCount: 1,
+  stringArrayWrappersType: 'variable',
+  unicodeEscapeSequence: false,
+};
 
-// Minify CSS
-function minCSS(s){
-  return s.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\s*([{};:,>+~])\s*/g,'$1').replace(/\s+/g,' ').replace(/;\}/g,'}').trim();
-}
-// Strip block comments from JS before obfuscation
-function stripComments(s){
-  return s.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\n{3,}/g,'\n').trim();
-}
-// Minify HTML
-function minHTML(s){
-  return s.replace(/<!--[\s\S]*?-->/g,'').replace(/\s{2,}/g,' ').replace(/>\s+</g,'><').trim();
-}
+const MINIFY_OPTS = {
+  collapseWhitespace: true,
+  removeComments: true,
+  removeRedundantAttributes: true,
+  removeScriptTypeAttributes: true,
+  removeStyleLinkTypeAttributes: true,
+  minifyCSS: { level: 2 },
+  minifyJS: (code) => {
+    if (code.trim().length < 200) return code; // skip tiny snippets
+    try {
+      return JavaScriptObfuscator.obfuscate(code, OBFUSCATE_OPTS).getObfuscatedCode();
+    } catch(e) {
+      console.warn('  ⚠ obfuscation failed, using raw:', e.message);
+      return code;
+    }
+  },
+  sortAttributes: true,
+  sortClassName: true,
+};
 
-// Obfuscate JS with javascript-obfuscator
-function obfuscateJS(s){
-  const result = JavaScriptObfuscator.obfuscate(s, {
-    compact: true,
-    controlFlowFlattening: true,
-    controlFlowFlatteningThreshold: 0.5,
-    deadCodeInjection: true,
-    deadCodeInjectionThreshold: 0.2,
-    debugProtection: true,
-    debugProtectionInterval: 2000,
-    disableConsoleOutput: true,
-    identifierNamesGenerator: 'hexadecimal',
-    renameGlobals: false,       // keep false so DOM IDs still work
-    selfDefending: true,
-    stringArray: true,
-    stringArrayCallsTransform: true,
-    stringArrayCallsTransformThreshold: 0.75,
-    stringArrayEncoding: ['rc4'],
-    stringArrayRotate: true,
-    stringArrayShuffle: true,
-    stringArrayThreshold: 0.75,
-    transformObjectKeys: true,
-    unicodeEscapeSequence: false,
-    splitStrings: true,
-    splitStringsChunkLength: 8,
-  });
-  return result.getObfuscatedCode();
-}
+(async () => {
+  console.log('\n🔒 Building obfuscated production files...\n');
+  let tb = 0, ta = 0;
 
-console.log('⏳ Building…');
-const cleanJS   = stripComments(js);
-console.log('⏳ Obfuscating JS (this takes ~10s)…');
-const finalJS   = obfuscateJS(cleanJS);
-const finalCSS  = minCSS(css);
-const finalBody = minHTML(body);
+  for (const file of files) {
+    const fp = path.join(PUBLIC, file);
+    if (!fs.existsSync(fp)) continue;
+    const src    = fs.readFileSync(fp, 'utf8');
+    const before = Buffer.byteLength(src);
+    tb += before;
+    try {
+      const out   = await minify(src, MINIFY_OPTS);
+      fs.writeFileSync(fp, out);
+      const after = Buffer.byteLength(out);
+      ta += after;
+      const pct = (((before-after)/before)*100).toFixed(1);
+      const arrow = after <= before ? '✅' : '⚠️';
+      console.log(`  ${arrow} ${file.padEnd(20)} ${kb(before)} → ${kb(after)}  (${pct}%)`);
+    } catch(e) {
+      console.error(`  ❌ ${file}: ${e.message}`);
+    }
+  }
 
-const appHTML = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
-<meta name="googlebot" content="noindex, nofollow">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Splittr</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>
-<script>(function(){try{if(!document.cookie.includes('splittr_has_session=1')&&localStorage.getItem('splittr_guest')!=='1'){window.location.replace('/');}else{document.documentElement.classList.add('splittr-authed');}}catch(e){}})()</script>
-<style>${finalCSS}</style>
-</head>
-${finalBody}
-<script>${finalJS}</script>
-</body>
-</html>`;
+  const pct = (((tb-ta)/tb)*100).toFixed(1);
+  console.log(`\n  Total: ${kb(tb)} → ${kb(ta)}  (${pct}%)\n`);
+  console.log('✨ Done.\n');
+})();
 
-fs.writeFileSync(path.join(out,'app.html'), appHTML);
-fs.copyFileSync(path.join(src,'login.html'), path.join(out,'login.html'));
-console.log('✅ Build complete');
-console.log(`   app.html   ${(appHTML.length/1024).toFixed(1)} KB`);
-console.log(`   login.html ${(fs.statSync(path.join(out,'login.html')).size/1024).toFixed(1)} KB`);
+function kb(b){ return (b/1024).toFixed(1)+'kb'; }
