@@ -221,6 +221,27 @@ body::before{
 }
 .error-banner.show{display:flex;}
 .error-banner .mi{font-size:16px;color:#f07070;flex-shrink:0;}
+/* drive warning — amber tone */
+.error-banner.drive{
+  border-color:rgba(196,169,106,0.35);
+  background:rgba(196,169,106,0.08);
+  color:var(--w);
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
+}
+.error-banner.drive .mi{color:var(--gold);}
+.error-banner.drive .banner-row{display:flex;align-items:flex-start;gap:10px;}
+.error-banner.drive .banner-actions{display:flex;gap:10px;padding-left:26px;flex-wrap:wrap;}
+.banner-btn{
+  font-size:10.5px;font-family:'DM Sans',sans-serif;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:7px 14px;border:none;cursor:pointer;
+  transition:opacity .2s;
+}
+.banner-btn.primary{background:var(--gold);color:#07060A;font-weight:600;}
+.banner-btn.secondary{background:transparent;color:var(--gold);border:1px solid var(--border2);}
+.banner-btn:hover{opacity:.85;}
 
 /* ── TRUST MODAL ── */
 .modal-ov{
@@ -417,10 +438,37 @@ body::before{
 </div>
 
 <script>
-// Show error if redirected back with ?auth=error
+// Show error banners based on URL params
 (function(){
-  if (new URLSearchParams(location.search).get('auth') === 'error'){
-    document.getElementById('err-banner').classList.add('show');
+  var p = new URLSearchParams(location.search);
+  var banner = document.getElementById('err-banner');
+
+  if (p.get('auth') === 'error'){
+    banner.classList.add('show');
+    history.replaceState({}, '', '/login');
+  }
+
+  if (p.get('state') === 'drive_required'){
+    banner.classList.add('show','drive');
+    banner.innerHTML = `
+      <div class="banner-row">
+        <span class="mi">warning_amber</span>
+        <span>Google Drive access is required to save your data. Please tick the Drive checkbox on the next screen.</span>
+      </div>`;
+    history.replaceState({}, '', '/login');
+  }
+
+  if (p.get('drive') === 'refused'){
+    banner.classList.add('show','drive');
+    banner.innerHTML = `
+      <div class="banner-row">
+        <span class="mi">info</span>
+        <span><b>Drive access was not granted.</b> Without it, Splittr can't save your data to the cloud. You can use local mode instead — your data stays on this device with manual JSON backups.</span>
+      </div>
+      <div class="banner-actions">
+        <button class="banner-btn primary" onclick="window.location.href='/api/auth/url'">Try again with Drive</button>
+        <button class="banner-btn secondary" onclick="openModal()">Use local mode</button>
+      </div>`;
     history.replaceState({}, '', '/login');
   }
 })();
