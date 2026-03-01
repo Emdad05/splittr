@@ -149,7 +149,13 @@ nav.stuck{background:#07060A;}
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   animation:up .8s .12s both, shimmer 22s linear 1.2s infinite;
 }
-.hero-h .dim{font-style:italic;font-weight:400;opacity:0.82;}
+.hero-h .dim{
+  font-style:italic;font-weight:400;
+  background:none;
+  -webkit-background-clip:unset;
+  background-clip:unset;
+  -webkit-text-fill-color:rgba(245,239,228,0.38);
+}
 
 .hero-rule{width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 44px;opacity:0;animation:up .8s .22s both;}
 
